@@ -1,4 +1,4 @@
-# Ticket Master Backend API
+# Idea Tracker Backend API
 
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
@@ -15,7 +15,7 @@
 
 ## Introduction
 
-This is the back-end API written to support the front-end App "TicketMaster".
+Idea tracker app API which would be used to generate ideas, create tasks associated with those ideas. Additional features like segregation of ideas based on category would also be possible.
 
 ## Updates
 
