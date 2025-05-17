@@ -64,4 +64,4 @@ async def update_idea_by_id(
     database: Session = Depends(db.get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return await services.update_idea(idea_id, request, current_user, database)
+    return await services.update_idea_by_id(idea_id, request, current_user, database)

@@ -13,7 +13,7 @@ async def create_new_idea(
         existing_idea = (
             database.query(models.Idea)
             .filter(
-                models.Idea.name == request.name,
+                models.Idea.title == request.title,
                 models.Idea.user_id == current_user.id,
             )
             .first()
@@ -25,11 +25,8 @@ async def create_new_idea(
             )
 
         new_idea = models.Idea(
-            name=request.name,
+            title=request.title,
             description=request.description,
-            start_date=request.start_date,
-            start_time=request.start_time,
-            location=request.location,
             user_id=current_user.id,
         )
         database.add(new_idea)
@@ -94,11 +91,8 @@ async def update_idea_by_id(
             )
 
         # update idea details
-        idea.name = request.name
-        idea.description = request.description
-        idea.start_date = request.start_date
-        idea.start_time = request.start_time
-        idea.location = request.location
+        idea.title = request.title or idea.title
+        idea.description = request.description or idea.description
 
         database.commit()
         database.refresh(idea)

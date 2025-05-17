@@ -4,17 +4,16 @@ from pydantic import BaseModel, EmailStr
 
 
 class IdeaBase(BaseModel):
-    id: Optional[int]
-    name: str
-    description: Optional[str]
+    title: str
+    description: str
 
     class Config:
         orm_mode = True
 
 
 class IdeaUpdate(BaseModel):
-    name: Optional[str]
-    description: Optional[str]
+    title: Optional[str] = None
+    description: Optional[str] = None
 
     class Config:
         orm_mode = True
@@ -22,7 +21,7 @@ class IdeaUpdate(BaseModel):
 
 class IdeaList(BaseModel):
     id: Optional[int]
-    name: str
+    title: str
     description: Optional[str]
     created_at: datetime
     updated_at: datetime
