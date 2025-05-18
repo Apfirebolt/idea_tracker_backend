@@ -15,6 +15,7 @@ class User(Base):
     password = Column(String(255))
 
     ideas = relationship("Idea", back_populates="user")
+    tags = relationship("Tag", back_populates="user")
     
 
     def __init__(self, username, email, role, password, *args, **kwargs):

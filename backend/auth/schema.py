@@ -13,7 +13,6 @@ class DisplayAccount(BaseModel):
     id: int
     username: str
     email: str
-    ideas : Optional[list[IdeaList]] = None
 
     model_config = ConfigDict(from_attributes=True)
 

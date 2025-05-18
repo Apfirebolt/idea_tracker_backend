@@ -6,6 +6,7 @@ import uvicorn
 from backend.auth import router as auth_router
 from backend.ideas import router as ideas_router
 from backend.users import router as users_router
+from backend.tags import router as tags_router
 
 app = FastAPI(title="Fast API Ticket Master App",
     docs_url="/docs",
@@ -24,6 +25,7 @@ app.add_middleware(
 app.include_router(auth_router.router)
 app.include_router(ideas_router.router)
 app.include_router(users_router.router)
+app.include_router(tags_router.router)
 
 
 @app.get("/")
