@@ -1,5 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr, ConfigDict
+from backend.ideas.schema import IdeaList
 
 
 class User(BaseModel):
@@ -12,6 +13,7 @@ class DisplayAccount(BaseModel):
     id: int
     username: str
     email: str
+    ideas : Optional[list[IdeaList]] = None
 
     model_config = ConfigDict(from_attributes=True)
 
