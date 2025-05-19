@@ -125,3 +125,47 @@ async def delete_idea_by_id(idea_id, current_user: User, database: Session):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while deleting the idea: {str(e)}",
         )
+    
+
+async def add_tags_to_idea(
+    idea_id, tags, current_user: User, database: Session
+) -> models.Idea:
+    try:
+        # check if idea belongs to the user
+        idea = (
+            database.query(models.Idea)
+            .filter_by(id=idea_id, user_id=current_user.id)
+            .first()
+        )
+        if not idea:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Idea Not Found!"
+            )
+
+        # add tags to the idea
+        for tag in tags:
+            existing_tag = (
+                database.query(models.Tag)
+                .filter_by(name=tag, user_id=current_user.id)
+                .first()
+            )
+            if existing_tag:
+                idea.tags.append(existing_tag)
+        
+        database.commit()
+        database.refresh(idea)
+        return idea
+    except Exception as e:
+        database.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An error occurred while adding tags to the idea: {str(e)}",
+        )
+
+        return idea
+    except Exception as e:
+        database.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An error occurred while adding tags to the idea: {str(e)}",
+        )

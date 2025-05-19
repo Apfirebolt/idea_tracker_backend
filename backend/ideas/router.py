@@ -8,6 +8,7 @@ from backend import db
 
 from . import schema
 from . import services
+from backend.tags.schema import AddTag
 
 
 router = APIRouter(tags=["Idea"], prefix="/api/ideas")
@@ -65,3 +66,14 @@ async def update_idea_by_id(
     current_user: User = Depends(get_current_user),
 ):
     return await services.update_idea_by_id(idea_id, request, current_user, database)
+
+@router.post(
+    "/{idea_id}/tags", status_code=status.HTTP_200_OK, response_model=schema.IdeaBase
+)
+async def add_tags_to_idea(
+    idea_id: int,
+    request: AddTag,
+    database: Session = Depends(db.get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return await services.add_tags_to_idea(idea_id, request.tags, current_user, database)

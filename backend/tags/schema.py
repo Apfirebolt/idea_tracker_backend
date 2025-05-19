@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 
 
@@ -11,6 +11,9 @@ class TagBase(BaseModel):
 class TagUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
+
+class AddTag(BaseModel):
+    tags: List[str]
 
 
 class TagList(BaseModel):
