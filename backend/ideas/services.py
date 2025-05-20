@@ -68,6 +68,10 @@ async def get_idea_by_id(idea_id, current_user, database):
                 status_code=status.HTTP_404_NOT_FOUND, detail="Idea Not Found!"
             )
         return idea
+    
+    except HTTPException as http_exc:
+        raise http_exc
+    
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -97,6 +101,10 @@ async def update_idea_by_id(
         database.commit()
         database.refresh(idea)
         return idea
+    
+    except HTTPException as http_exc:
+        raise http_exc
+    
     except Exception as e:
         database.rollback()
         raise HTTPException(
@@ -119,6 +127,10 @@ async def delete_idea_by_id(idea_id, current_user: User, database: Session):
             )
         database.query(models.Idea).filter(models.Idea.id == idea_id).delete()
         database.commit()
+
+    except HTTPException as http_exc:
+        raise http_exc
+    
     except Exception as e:
         database.rollback()
         raise HTTPException(
@@ -139,7 +151,7 @@ async def add_tags_to_idea(
         )
         if not idea:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Idea Not Found!"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Idea Not Found!"
             )
 
         # add tags to the idea
@@ -155,17 +167,13 @@ async def add_tags_to_idea(
         database.commit()
         database.refresh(idea)
         return idea
-    except Exception as e:
-        database.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while adding tags to the idea: {str(e)}",
-        )
 
-        return idea
+    except HTTPException as http_exc:
+        raise http_exc
+    
     except Exception as e:
         database.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while adding tags to the idea: {str(e)}",
+            detail=f"An unexpected error occurred while adding tags to the idea: {str(e)}",
         )

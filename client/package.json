@@ -1,0 +1,39 @@
+{
+  "name": "idea_tracker_client",
+  "author": "Amit Prafulla",
+  "description": "A web application for tracking ideas and projects.",
+  "license": "MIT",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.7.23",
+    "@heroicons/vue": "^1.0.6",
+    "aos": "^2.3.4",
+    "axios": "^1.8.1",
+    "dayjs": "^1.11.13",
+    "express": "^4.21.2",
+    "happy-dom": "^17.2.2",
+    "vitest": "^3.0.8",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1",
+    "@ag-grid-community/client-side-row-model": "~31.1.0",
+    "@ag-grid-community/core": "~31.1.0",
+    "@ag-grid-community/vue3": "~31.1.0",
+    "@ag-grid-community/styles": "~31.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.6",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "autoprefixer": "^10.4.21",
+    "vite": "^6.3.5",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^17.4.4",
+    "vitest": "^3.1.1"
+  }
+}

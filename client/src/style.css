@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Raleway:wght@400;700&display=swap');
+
+@import "tailwindcss";
+
+body {
+  font-family: 'Lato', sans-serif;
+  background-color: #f0f4f8;
+  color: #333;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+}
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+h2 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+@theme {
+  --color-primary: #5409DA;
+  --color-secondary: #B6B09F;
+  --color-tertiary: #4E71FF;
+  --color-light: #F2F2F2;
+  --color-dark: #1D1616;
+  --color-danger: #E82561;
+  --color-success: #5B913B;
+  --color-info: #BBFBFF;
+  --color-accent-dark: #F9B3D1;
+}
