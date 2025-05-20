@@ -4,7 +4,7 @@
       <div class="flex items-center h-16">
         <div class="flex items-center w-full justify-between">
           <div class="justify-between flex items-center">
-            <h2 class="text-2xl text-white font-bold">Vue Dinosaurs</h2>
+            <h2 class="text-2xl text-white font-bold">Idea Tracker</h2>
           </div>
           <div class="hidden sm:block sm:ml-6">
             <div class="flex space-x-4">

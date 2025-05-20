@@ -13,8 +13,8 @@
 </template>
 
 <script setup>
-import FooterComponent from './components/FooterComponent.vue';
-import HeaderComponent from './components/HeaderComponent.vue';
+import FooterComponent from './components/Footer.vue';
+import HeaderComponent from './components/Header.vue';
 </script>
 
 <style>

@@ -2,7 +2,7 @@
   <footer class="py-10 px-8 bg-secondary text-light dark:bg-slate-700 dark:text-white">
     <div class="container mx-auto px-4">
       <p class="text-center text-sm">
-        &copy; {{ currentYear }} Vue Dinosaurs Built with Vue 3 and Tailwind CSS
+        &copy; {{ currentYear }} Idea Tracker Built with Vue 3, Tailwind CSS and FastAPI
       </p>
     </div>
   </footer>
