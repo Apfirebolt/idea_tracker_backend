@@ -46,6 +46,12 @@
         >
           Register
         </button>
+        <p>
+          Already have an account?
+          <router-link to="/login" class="text-blue-600 hover:underline">
+            Login
+          </router-link>
+        </p>
         <p v-if="error" class="text-red-500 mt-4 text-center">{{ error }}</p>
       </form>
     </div>
@@ -53,12 +59,16 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useAuth } from "../store/auth";
 
 const username = ref("");
 const email = ref("");
 const password = ref("");
 const error = ref("");
+const auth = useAuth();
+
+const authData = computed(() => auth.getAuthData);
 
 const register = async () => {
   error.value = "";
@@ -68,8 +78,11 @@ const register = async () => {
   }
   // Simulate registration logic
   try {
-    // await api.register(username.value, email.value, password.value)
-    // On success, redirect or update state
+    await auth.registerAction({
+      username: username.value,
+      email: email.value,
+      password: password.value,
+    });
   } catch (e) {
     error.value = "Registration failed.";
   }

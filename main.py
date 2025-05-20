@@ -12,7 +12,7 @@ app = FastAPI(title="Fast API Ticket Master App",
     docs_url="/docs",
     version="0.0.1")
 
-origins = ["http://localhost:3000",]
+origins = ["http://localhost:8080", "http://localhost:3000",]
 
 app.add_middleware(
     CORSMiddleware,

@@ -4,14 +4,19 @@
       <div class="flex items-center h-16">
         <div class="flex items-center w-full justify-between">
           <div class="justify-between flex items-center">
-            <h2 class="text-2xl text-white font-bold">Idea Tracker</h2>
+            <h2 class="text-2xl text-white font-bold">
+              Idea Tracker
+            </h2>
+            <span v-if="authData && authData.value && authData.value.user" class="ml-4 text-white text-lg">
+              Welcome, {{ authData.value.user.username }}!
+            </span>
           </div>
           <div class="hidden sm:block sm:ml-6">
             <div class="flex space-x-4">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
 
               <router-link
-                v-for="link in links"
+                v-for="link in (authData && authData.value && authData.value.user ? authLinks : links)"
                 :key="link.name"
                 :to="link.href"
                 class="text-white hover:bg-primary transition-all duration-200 hover:text-white px-3 py-2 rounded-md font-medium"
@@ -51,15 +56,24 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useAuth } from '../store/auth';
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 import { MenuIcon, XIcon } from "@heroicons/vue/outline";
+
+const auth = useAuth();
+const authData = computed(() => auth.getAuthData);
 
 const isScrolledDown = ref(false);
 const links = [
   { name: 'Home', href: '/' },
-  { name: 'About', href: '/about' },
-  { name: 'Dinosaurs', href: '/dinosaur' },
+  { name: 'Login', href: '/login' },
+  { name: 'Register', href: '/register' },
+];
+
+const authLinks = [
+  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Profile', href: '/profile' }
 ];
 
 const checkScroll = () => {

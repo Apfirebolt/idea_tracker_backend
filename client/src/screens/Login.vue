@@ -33,6 +33,12 @@
         >
           Login
         </button>
+        <p>
+          Don't have an account?
+          <router-link to="/register" class="text-blue-600 hover:underline">
+            Register
+          </router-link>
+        </p>
         <p v-if="error" class="text-red-500 mt-4 text-center">{{ error }}</p>
       </form>
     </div>
@@ -40,11 +46,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { useAuth } from "../store/auth";
 
 const email = ref("");
 const password = ref("");
 const error = ref("");
+const auth = useAuth();
+
+const authData = computed(() => auth.getAuthData);
 
 const login = async () => {
   error.value = "";
@@ -55,8 +65,10 @@ const login = async () => {
   }
   // Simulate login
   try {
-    // await api.login(email.value, password.value)
-    // On success, redirect or update state
+    await auth.loginAction({
+      email: email.value, 
+      password: password.value,
+    });
   } catch (e) {
     error.value = "Invalid credentials.";
   }
