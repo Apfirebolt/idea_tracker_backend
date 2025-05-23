@@ -39,8 +39,18 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
-const emit = defineEmits(['addIdea', 'close']);
+import { reactive, onMounted } from "vue"
+const emit = defineEmits(['addIdea', 'close', 'updateIdea']);
+
+const props = defineProps({
+  idea: {
+    type: Object,
+    default: () => ({
+      title: "",
+      description: "",
+    }),
+  }
+});
 
 const form = reactive({
   title: "",
@@ -49,7 +59,17 @@ const form = reactive({
 
 function submitForm() {
   // Handle form submission logic here
-  console.log("Form submitted:", form);
-  emit("addIdea", { ...form });
+  if (props.idea) {
+    emit("updateIdea", { ...props.idea, ...form });
+  } else {
+    emit("addIdea", form);
+  }
 }
+
+onMounted(() => {
+  if (props.idea) {
+    form.title = props.idea.title;
+    form.description = props.idea.description;
+  }
+});
 </script>

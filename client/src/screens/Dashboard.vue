@@ -100,7 +100,7 @@
                 >
                   Add Tag Form
                 </DialogTitle>
-                <TagForm @close="closeTagForm" @addTag="addTag" />
+                <TagForm @close="closeTagForm" @addTag="addTag" @updateTag="editTagUtility" :tag="selectedTag" />
               </DialogPanel>
             </TransitionChild>
           </div>
@@ -143,7 +143,7 @@
                 >
                   Add Idea Form
                 </DialogTitle>
-                <IdeaForm @close="closeIdeaForm" @addIdea="addIdea" />
+                <IdeaForm @close="closeIdeaForm" @addIdea="addIdea" @updateIdea="editIdeaUtility" :idea="selectedIdea" />
               </DialogPanel>
             </TransitionChild>
           </div>
@@ -164,10 +164,7 @@ import "@ag-grid-community/styles/ag-theme-alpine.css";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { AgGridVue } from "@ag-grid-community/vue3";
 import {
-  ArrowUpIcon,
-  ArrowDownIcon,
   PlusIcon,
-  TrashIcon,
 } from "@heroicons/vue/solid";
 import {
   TransitionRoot,
@@ -191,14 +188,32 @@ const columnDefs = ref([
     headerName: "Actions",
     field: "actions",
     cellRenderer: (params) => {
-      const btn = document.createElement("button");
-      btn.innerText = "Delete";
-      btn.className =
-        "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
-      btn.onclick = () => {
-        deleteIdea(params.data.id);
+      const container = document.createElement("div");
+      container.style.display = "flex";
+      container.style.gap = "0.5rem";
+
+      // Edit button
+      const editBtn = document.createElement("button");
+      editBtn.innerText = "Edit";
+      editBtn.className =
+      "bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600";
+      editBtn.onclick = () => {
+      editIdea(params.data);
       };
-      return btn;
+
+      // Delete button
+      const deleteBtn = document.createElement("button");
+      deleteBtn.innerText = "Delete";
+      deleteBtn.className =
+      "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
+      deleteBtn.onclick = () => {
+      deleteIdea(params.data);
+      };
+
+      container.appendChild(editBtn);
+      container.appendChild(deleteBtn);
+
+      return container;
     },
     width: 120,
     suppressMenu: true,
@@ -214,14 +229,32 @@ const tagColumnDefs = ref([
     headerName: "Actions",
     field: "actions",
     cellRenderer: (params) => {
-      const btn = document.createElement("button");
-      btn.innerText = "Delete";
-      btn.className =
-        "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
-      btn.onclick = () => {
-        deleteTag(params.data.id);
+      const container = document.createElement("div");
+      container.style.display = "flex";
+      container.style.gap = "0.5rem";
+
+      // Edit button
+      const editBtn = document.createElement("button");
+      editBtn.innerText = "Edit";
+      editBtn.className =
+      "bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600";
+      editBtn.onclick = () => {
+      editTag(params.data);
       };
-      return btn;
+
+      // Delete button
+      const deleteBtn = document.createElement("button");
+      deleteBtn.innerText = "Delete";
+      deleteBtn.className =
+      "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
+      deleteBtn.onclick = () => {
+      deleteTag(params.data);
+      };
+
+      container.appendChild(editBtn);
+      container.appendChild(deleteBtn);
+
+      return container;
     },
     width: 120,
     suppressMenu: true,
@@ -234,6 +267,8 @@ const ideaStore = useIdeaStore();
 const tagStore = useTagStore();
 const isIdeaFormOpen = ref(false);
 const isTagFormOpen = ref(false);
+const selectedIdea = ref(null);
+const selectedTag = ref(null);
 const modules = ref([ClientSideRowModelModule]);
 
 const ideas = computed(() => ideaStore.ideas);
@@ -285,6 +320,30 @@ const deleteIdea = async (id) => {
 const deleteTag = async (id) => {
   await tagStore.deleteTag(id);
   await tagStore.getTagsAction();
+};
+
+const editIdea = async (payload) => {
+  selectedIdea.value = payload;
+  isIdeaFormOpen.value = true;
+};
+
+const editIdeaUtility = async (payload) => {
+  await ideaStore.updateIdea(payload);
+  await ideaStore.getIdeasAction();
+  closeIdeaForm();
+  selectedIdea.value = null;
+};
+
+const editTag = async (payload) => {
+  selectedTag.value = payload;
+  isTagFormOpen.value = true;
+};
+
+const editTagUtility = async (payload) => {
+  await tagStore.updateTag(payload);
+  await tagStore.getTagsAction();
+  closeTagForm();
+  selectedTag.value = null;
 };
 
 onMounted(async () => {

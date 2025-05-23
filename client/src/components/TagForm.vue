@@ -39,9 +39,19 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, onMounted } from "vue";
 
-const emit = defineEmits(['addTag', 'close']);
+const emit = defineEmits(['addTag', 'close', 'updateTag']);
+
+const props = defineProps({
+  tag: {
+    type: Object,
+    default: () => ({
+      name: "",
+      description: "",
+    }),
+  },
+});
 
 const form = reactive({
   name: "",
@@ -51,6 +61,17 @@ const form = reactive({
 function submitForm() {
   // Handle form submission logic here
   console.log("Form submitted:", form);
-  emit("addTag", { ...form });
+  if (props.tag) {
+    emit("updateTag", { ...form });
+  } else {
+    emit("addTag", { ...form });
+  }
 }
+
+onMounted(() => {
+  if (props.tag) {
+    form.name = props.tag.name;
+    form.description = props.tag.description;
+  }
+});
 </script>

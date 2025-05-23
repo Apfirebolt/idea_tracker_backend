@@ -103,6 +103,25 @@ export const useIdeaStore = defineStore("idea", {
       }
     },
 
+    async updateIdea(ideaData) {
+      try {
+        const headers = this.getAuthHeaders();
+        this.loading = true;
+        const response = await httpClient.put("ideas/" + ideaData.id, ideaData, {
+          headers,
+        });
+        if (response.status === 200) {
+          console.log("response", response);
+          emitter.emit("updateIdea", response.data);
+        }
+      } catch (error) {
+        console.log(error);
+        return error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
     resetIdeaData() {
       this.idea = {};
       this.ideas = [];
