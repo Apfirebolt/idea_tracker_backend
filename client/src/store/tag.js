@@ -114,6 +114,7 @@ export const useTagStore = defineStore("tag", {
     },
 
     async updateTag(tagData) {
+      console.log("tagData", tagData);
       try {
         const headers = this.getAuthHeaders();
         this.loading = true;
@@ -121,7 +122,7 @@ export const useTagStore = defineStore("tag", {
           headers,
         });
         if (response.status === 200) {
-          toast.success("Tag updated!");
+          console.log("response", response);
         }
       } catch (error) {
         console.log(error);

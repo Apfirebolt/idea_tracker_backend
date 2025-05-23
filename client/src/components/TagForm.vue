@@ -62,7 +62,7 @@ function submitForm() {
   // Handle form submission logic here
   console.log("Form submitted:", form);
   if (props.tag) {
-    emit("updateTag", { ...form });
+     emit("updateTag", { ...props.tag, ...form });
   } else {
     emit("addTag", { ...form });
   }
