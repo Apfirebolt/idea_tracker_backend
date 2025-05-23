@@ -30,53 +30,34 @@
           <span class="text-gray-500 mt-2">Completed</span>
         </div>
       </div>
+
       <div class="bg-white rounded-lg shadow p-6">
         <h2 class="text-xl font-semibold mb-4 text-gray-700">Recent Ideas</h2>
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead>
-            <tr>
-              <th
-                class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-              >
-                Title
-              </th>
-              <th
-                class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-              >
-                Status
-              </th>
-              <th
-                class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-              >
-                Created
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="idea in recentIdeas"
-              :key="idea.id"
-              class="hover:bg-gray-50"
-            >
-              <td class="px-4 py-2 text-gray-700">{{ idea.title }}</td>
-              <td class="px-4 py-2">
-                <span
-                  :class="{
-                    'bg-blue-100 text-blue-800': idea.status === 'New',
-                    'bg-green-100 text-green-800':
-                      idea.status === 'In Progress',
-                    'bg-purple-100 text-purple-800':
-                      idea.status === 'Completed',
-                  }"
-                  class="px-2 py-1 rounded text-xs font-semibold"
-                >
-                  {{ idea.status }}
-                </span>
-              </td>
-              <td class="px-4 py-2 text-gray-500">{{ idea.created }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <ag-grid-vue
+          v-if="ideas.length"
+          class="ag-theme-alpine"
+          style="width: 100%; height: 400px"
+          :columnDefs="columnDefs"
+          :rowData="ideas"
+          :modules="modules"
+          :defaultColDef="defaultColDef"
+          :gridOptions="gridOptions"
+        />
+        <div v-else class="text-center text-gray-500">No ideas available.</div>
+      </div>
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Recent Tags</h2>
+        <ag-grid-vue
+          v-if="tags.length"
+          class="ag-theme-alpine"
+          style="width: 100%; height: 400px"
+          :columnDefs="tagColumnDefs"
+          :rowData="tags"
+          :modules="modules"
+          :defaultColDef="defaultColDef"
+          :gridOptions="gridOptions"
+        />
+        <div v-else class="text-center text-gray-500">No tags available.</div>
       </div>
     </div>
     <TransitionRoot appear :show="isTagFormOpen" as="template">
@@ -174,6 +155,10 @@ import { useTagStore } from "../store/tag";
 import IdeaForm from "../components/IdeaForm.vue";
 import TagForm from "../components/TagForm.vue";
 import { ref, computed, onMounted } from "vue";
+import "@ag-grid-community/styles/ag-grid.css";
+import "@ag-grid-community/styles/ag-theme-alpine.css";
+import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
+import { AgGridVue } from "@ag-grid-community/vue3";
 import {
   TransitionRoot,
   TransitionChild,
@@ -182,13 +167,79 @@ import {
   DialogTitle,
 } from "@headlessui/vue";
 
+// ag grid config
+const columnDefs = ref([
+  { field: "id", headerName: "ID", sortable: true, filter: true },
+  { field: "title", headerName: "Name", sortable: true, filter: true },
+  {
+    field: "description",
+    headerName: "Description",
+    sortable: true,
+    filter: true,
+  },
+  {
+    headerName: "Actions",
+    field: "actions",
+    cellRenderer: (params) => {
+      const btn = document.createElement("button");
+      btn.innerText = "Delete";
+      btn.className =
+        "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
+      btn.onclick = () => {
+        deleteIdea(params.data.id);
+      };
+      return btn;
+    },
+    width: 120,
+    suppressMenu: true,
+    sortable: false,
+    filter: false,
+  },
+]);
+
+const tagColumnDefs = ref([
+  { field: "id", headerName: "ID", sortable: true, filter: true },
+  { field: "name", headerName: "Tag Name", sortable: true, filter: true },
+  {
+    headerName: "Actions",
+    field: "actions",
+    cellRenderer: (params) => {
+      const btn = document.createElement("button");
+      btn.innerText = "Delete";
+      btn.className =
+        "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
+      btn.onclick = () => {
+        deleteTag(params.data.id);
+      };
+      return btn;
+    },
+    width: 120,
+    suppressMenu: true,
+    sortable: false,
+    filter: false,
+  },
+]);
+
 const ideaStore = useIdeaStore();
 const tagStore = useTagStore();
 const isIdeaFormOpen = ref(false);
 const isTagFormOpen = ref(false);
+const modules = ref([ClientSideRowModelModule]);
 
 const ideas = computed(() => ideaStore.ideas);
 const tags = computed(() => tagStore.tags);
+
+const defaultColDef = ref({
+  flex: 1,
+  minWidth: 100,
+  resizable: true,
+});
+
+const gridOptions = ref({
+  animateRows: true,
+  rowHeight: 50,
+  headerHeight: 50,
+});
 
 const openIdeaForm = () => {
   isIdeaFormOpen.value = true;
@@ -203,23 +254,15 @@ const openTagForm = () => {
 const closeTagForm = () => {
   isTagFormOpen.value = false;
 };
-const recentIdeas = ref([
-  {
-    id: 1,
-    title: "Add dark mode",
-    status: "In Progress",
-    created: "2024-06-01",
-  },
-  { id: 2, title: "Mobile app support", status: "New", created: "2024-06-03" },
-  { id: 3, title: "Export to CSV", status: "Completed", created: "2024-05-28" },
-]);
 
 const addIdea = async (idea) => {
+  closeIdeaForm();
   await ideaStore.addIdea(idea);
   await ideaStore.getIdeasAction();
 };
 
 const addTag = async (tag) => {
+  closeTagForm();
   await tagStore.addTag(tag);
   await tagStore.getTagsAction();
 };

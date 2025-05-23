@@ -102,37 +102,6 @@ export const useTagStore = defineStore("tag", {
       }
     },
 
-    async updateTag(tagItem, action) {
-      try {
-        const headers = {
-          Authorization: `Bearer ${auth.authData.token}`,
-        };
-        console.log("tagItem", tagItem);
-        if (action === "important") {
-          tagItem.isImportant = !tagItem.isImportant;
-        }
-        if (action === "trash") {
-          tagItem.isDeleted = !tagItem.isTrash;
-        }
-        if (action === "read") {
-          tagItem.isRead = !tagItem.isRead;
-        }
-        const response = await httpClient.patch(
-          "tags/" + tagItem._id,
-          tagItem,
-          {
-            headers,
-          }
-        );
-        if (response.status === 200) {
-          toast.success("Tag updated!");
-          await this.getTagsAction();
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
     resetTagData() {
       this.tag = {};
       this.tags = [];
