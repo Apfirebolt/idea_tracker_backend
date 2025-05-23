@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, status, Response
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from backend.auth.jwt import get_current_user
 from backend.auth.models import User

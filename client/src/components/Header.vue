@@ -7,22 +7,30 @@
             <h2 class="text-2xl text-white font-bold">
               Idea Tracker
             </h2>
-            <span v-if="authData && authData.value && authData.value.user" class="ml-4 text-white text-lg">
-              Welcome, {{ authData.value.user.username }}!
+            <span v-if="authData && authData.user && authData.user.username" class="ml-4 text-white text-lg">
+              Welcome, {{ authData.user.username }}!
             </span>
           </div>
+          
           <div class="hidden sm:block sm:ml-6">
             <div class="flex space-x-4">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
 
               <router-link
-                v-for="link in (authData && authData.value && authData.value.user ? authLinks : links)"
+                v-for="link in (authData && authData.user ? authLinks : links)"
                 :key="link.name"
                 :to="link.href"
                 class="text-white hover:bg-primary transition-all duration-200 hover:text-white px-3 py-2 rounded-md font-medium"
               >
                 {{ link.name }}
               </router-link>
+              <button
+                v-if="authData && authData.user"
+                @click="auth.logout"
+                class="text-white bg-red-600 hover:bg-red-700 transition-all duration-200 px-3 py-2 rounded-md font-medium"
+              >
+                Log out
+              </button>
             </div>
           </div>
         </div>

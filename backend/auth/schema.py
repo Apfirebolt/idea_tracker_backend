@@ -1,6 +1,5 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr, ConfigDict
-from backend.ideas.schema import IdeaList
 
 
 class User(BaseModel):

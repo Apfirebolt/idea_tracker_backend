@@ -111,11 +111,11 @@
               >
                 <DialogTitle
                   as="h3"
-                  class="text-lg font-medium leading-6 text-gray-900"
+                  class="text-lg font-medium leading-6 text-center my-3 text-gray-900"
                 >
                   Add Tag Form
                 </DialogTitle>
-                <TagForm @close="closeTagForm" />
+                <TagForm @close="closeTagForm" @addTag="addTag" />
               </DialogPanel>
             </TransitionChild>
           </div>
@@ -154,11 +154,11 @@
               >
                 <DialogTitle
                   as="h3"
-                  class="text-lg font-medium leading-6 text-gray-900"
+                  class="text-lg font-medium leading-6 text-center my-3 text-gray-900"
                 >
                   Add Idea Form
                 </DialogTitle>
-                <IdeaForm @close="closeIdeaForm" />
+                <IdeaForm @close="closeIdeaForm" @addIdea="addIdea" />
               </DialogPanel>
             </TransitionChild>
           </div>
@@ -169,9 +169,11 @@
 </template>
 
 <script setup>
+import { useIdeaStore } from "../store/idea";
+import { useTagStore } from "../store/tag";
 import IdeaForm from "../components/IdeaForm.vue";
 import TagForm from "../components/TagForm.vue";
-import { ref } from "vue";
+import { ref, computed, onMounted } from "vue";
 import {
   TransitionRoot,
   TransitionChild,
@@ -180,8 +182,14 @@ import {
   DialogTitle,
 } from "@headlessui/vue";
 
+const ideaStore = useIdeaStore();
+const tagStore = useTagStore();
 const isIdeaFormOpen = ref(false);
 const isTagFormOpen = ref(false);
+
+const ideas = computed(() => ideaStore.ideas);
+const tags = computed(() => tagStore.tags);
+
 const openIdeaForm = () => {
   isIdeaFormOpen.value = true;
 };
@@ -205,4 +213,19 @@ const recentIdeas = ref([
   { id: 2, title: "Mobile app support", status: "New", created: "2024-06-03" },
   { id: 3, title: "Export to CSV", status: "Completed", created: "2024-05-28" },
 ]);
+
+const addIdea = async (idea) => {
+  await ideaStore.addIdea(idea);
+  await ideaStore.getIdeasAction();
+};
+
+const addTag = async (tag) => {
+  await tagStore.addTag(tag);
+  await tagStore.getTagsAction();
+};
+
+onMounted(async () => {
+  await ideaStore.getIdeasAction();
+  await tagStore.getTagsAction();
+});
 </script>

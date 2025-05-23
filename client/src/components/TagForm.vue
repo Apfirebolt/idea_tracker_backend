@@ -1,62 +1,56 @@
 <template>
-  <form @submit.prevent="submitForm">
-    <div>
-      <label for="name">Tag Name</label>
+  <form
+    @submit.prevent="submitForm"
+    class="max-w-md mx-auto p-6 bg-white rounded shadow"
+  >
+    <div class="mb-4">
+      <label for="name" class="block text-gray-700 font-bold mb-2"
+        >Name</label
+      >
       <input
         id="name"
         v-model="form.name"
         type="text"
+        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
         required
         placeholder="Enter tag name"
       />
     </div>
-    <div>
-      <label for="description">Description</label>
+    <div class="mb-4">
+      <label for="description" class="block text-gray-700 font-bold mb-2"
+        >Description</label
+      >
       <textarea
         id="description"
         v-model="form.description"
+        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+        rows="4"
+        required
         placeholder="Enter tag description"
       ></textarea>
     </div>
-    <button type="submit">Save Tag</button>
+    <button
+      type="submit"
+      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+    >
+      Submit
+    </button>
   </form>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { reactive } from "vue";
 
-const form = ref({
-    name: '',
-    description: '',
+const emit = defineEmits(['addTag', 'close']);
+
+const form = reactive({
+  name: "",
+  description: "",
 });
 
-const emit = defineEmits(['submit']);
-
 function submitForm() {
-    emit('submit', { ...form.value });
-    form.value.name = '';
-    form.value.description = '';
+  // Handle form submission logic here
+  console.log("Form submitted:", form);
+  emit("addTag", { ...form });
 }
 </script>
-
-<style scoped>
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  max-width: 400px;
-}
-label {
-  font-weight: bold;
-}
-input,
-textarea {
-  width: 100%;
-  padding: 0.5rem;
-  box-sizing: border-box;
-}
-button {
-  align-self: flex-start;
-  padding: 0.5rem 1rem;
-}
-</style>

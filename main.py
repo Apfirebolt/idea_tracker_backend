@@ -1,7 +1,9 @@
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import time
 import uvicorn
+from logging_config import LOGGING_CONFIG
+import logging
+from logging.config import dictConfig
 
 from backend.auth import router as auth_router
 from backend.ideas import router as ideas_router
@@ -13,6 +15,8 @@ app = FastAPI(title="Fast API Ticket Master App",
     version="0.0.1")
 
 origins = ["http://localhost:8080", "http://localhost:3000",]
+
+logger = logging.getLogger("my_fastapi_app")
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,6 +34,7 @@ app.include_router(tags_router.router)
 
 @app.get("/")
 async def root():
+    logger.info("Root endpoint accessed")
     return {"message": "Welcome to the FastAPI Idea Tracker App!"}
 
 

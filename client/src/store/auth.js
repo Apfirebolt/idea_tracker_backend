@@ -28,6 +28,7 @@ export const useAuth = defineStore("auth", {
           this.authData = response.data;
           // toast.success("Login successful!");
           // set the data in cookie
+          console.log('Login response', response.data);
           Cookie.set("user", JSON.stringify(response.data), { expires: 30 });
           router.push("/dashboard");
         }
@@ -82,7 +83,6 @@ export const useAuth = defineStore("auth", {
       this.authData = null;
       Cookie.remove("user");
       router.push("/login");
-      toast.success("Logout successful!");
     },
 
     resetAuth() {

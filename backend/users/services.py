@@ -1,7 +1,6 @@
 from fastapi import HTTPException, status
 from typing import List
 from backend.auth.models import User
-from sqlalchemy.orm import Session
 
 
 async def get_user_listing(database, current_user) -> List[User]:

@@ -7,8 +7,6 @@ from alembic import context
 from backend.db import Base
 import os
 
-from backend.auth.models import User
-from backend.ideas.models import Idea
 
 # Import and load environment variables
 from dotenv import load_dotenv
