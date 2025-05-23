@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import httpClient from "../plugins/interceptor";
 import { useAuth } from "./auth";
-import emitter from "../plugins/eventBus";
+import router from "../routes";
 
 export const useTagStore = defineStore("tag", {
   state: () => ({
@@ -24,6 +24,10 @@ export const useTagStore = defineStore("tag", {
   },
 
   actions: {
+    redirectToLogin() {
+      // Redirect to the login page
+      router.push({ name: "Login" });
+    },
     getAuthHeaders() {
       // Call useAuth() inside an action where Pinia is active
       const auth = useAuth();
@@ -77,7 +81,14 @@ export const useTagStore = defineStore("tag", {
         });
         this.tags = response.data;
       } catch (error) {
-        console.log(error);
+        console.log('Error fetching tags:', error.status);
+        if (error.status === 401) {
+          this.redirectToLogin();
+        } else if (error.status === 403) {
+          console.log("Forbidden");
+        } else if (error.status === 404) {
+          console.log("Tags not found");
+        }
         return error;
       } finally {
         this.loading = false;
