@@ -2,6 +2,8 @@
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
       <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+      <Message v-if="message" :message="message" type="success" />
+      <Message v-if="errorMessage" :message="errorMessage" type="error" />
       <form @submit.prevent="login">
         <div class="mb-4">
           <label class="block text-gray-700 mb-2" for="email">Email</label>
@@ -56,6 +58,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useAuth } from "../store/auth";
+import Message from "../components/Message.vue";
 
 // Import icons from @heroicons/vue/24/outline (install with: npm i @heroicons/vue)
 import {
@@ -67,6 +70,8 @@ const email = ref("");
 const password = ref("");
 const error = ref("");
 const auth = useAuth();
+const message = computed(() => auth.message);
+const errorMessage = computed(() => auth.error);
 
 const login = async () => {
   error.value = "";

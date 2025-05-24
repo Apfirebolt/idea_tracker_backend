@@ -8,6 +8,8 @@ import emitter from '../plugins/eventBus';
 export const useAuth = defineStore("auth", {
   state: () => ({
     authData: Cookie.get("user") ? JSON.parse(Cookie.get("user")) : null,
+    message: ref(""),
+    error: ref(""),
     loading: ref(false),
   }),
 
@@ -28,18 +30,25 @@ export const useAuth = defineStore("auth", {
           this.authData = response.data;
           // toast.success("Login successful!");
           // set the data in cookie
-          console.log('Login response', response.data);
+          this.message = response.data.message || "Login successful!";
           Cookie.set("user", JSON.stringify(response.data), { expires: 30 });
           router.push("/dashboard");
         }
       } catch (error) {
         let message = "An error occurred!";
+        this.error = error;
         if (error.response && error.response.data) {
-          message = error.response.data.message;
+          message = error.response.data.detail || "An error occurred!";
+          this.error = message;
         }
-        // toast.error(message);
-        console.log('Some error', error);
         return error;
+      } finally {
+        this.loading = false;
+        // reset message and error after some time
+        setTimeout(() => {
+          this.message = "";
+          this.error = "";
+        }, 5000);
       }
     },
 
@@ -49,17 +58,25 @@ export const useAuth = defineStore("auth", {
         if (response.data && response.status === 201) {
           this.authData = response.data;
           // toast.success("Registration successful!");
+          this.message = response.data.message || "Registration successful!";
           Cookie.set("user", JSON.stringify(response.data), { expires: 30 });
           router.push("/dashboard");
         }
       } catch (error) {
         let message = "An error occurred!";
         if (error.response && error.response.data) {
-          message = error.response.data.message;
+          this.message = error.response.data.detail;
         }
         // toast.error(message);
         console.log(error);
         return error;
+      } finally {
+        this.loading = false;
+        // reset message and error after some time
+        setTimeout(() => {
+          this.message = "";
+          this.error = "";
+        }, 5000);
       }
     },
 

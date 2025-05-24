@@ -9,6 +9,8 @@ export const useIdeaStore = defineStore("idea", {
   state: () => ({
     idea: ref({}),
     ideas: ref([]),
+    message: ref(""),
+    error: ref(""),
     loading: ref(false),
   }),
 
@@ -21,6 +23,12 @@ export const useIdeaStore = defineStore("idea", {
     },
     isLoading() {
       return this.loading;
+    },
+    getMessage() {
+      return this.message;
+    },
+    getError() {
+      return this.error;
     },
   },
 
@@ -40,19 +48,25 @@ export const useIdeaStore = defineStore("idea", {
           headers,
         });
         if (response.status === 201) {
+          this.message = response.data.message || "Idea created successfully!";
           console.log("response", response);
         }
       } catch (error) {
         console.log(error);
         if (error.response.status === 400) {
           let message = "Bad request";
-          if (error.response.data.message) {
+          if (error.response.data.detail) {
             message = error.response.data.message;
           }
           console.log("Error message", message);
         }
       } finally {
         this.loading = false;
+        // reset message and error after some time
+        setTimeout(() => {
+          this.message = "";
+          this.error = "";
+        }, 5000);
       }
     },
 
@@ -93,6 +107,7 @@ export const useIdeaStore = defineStore("idea", {
           headers,
         });
         if (response.status === 200) {
+          this.message = response.data.message || "Idea deleted successfully!";
           console.log("response", response);
         }
       } catch (error) {
@@ -111,7 +126,7 @@ export const useIdeaStore = defineStore("idea", {
           headers,
         });
         if (response.status === 200) {
-          console.log("response", response);
+          this.message = response.data.message || "Idea updated successfully!";
           emitter.emit("updateIdea", response.data);
         }
       } catch (error) {
@@ -119,12 +134,19 @@ export const useIdeaStore = defineStore("idea", {
         return error;
       } finally {
         this.loading = false;
+        // reset message and error after some time
+        setTimeout(() => {
+          this.message = "";
+          this.error = "";
+        }, 5000);
       }
     },
 
     resetIdeaData() {
       this.idea = {};
       this.ideas = [];
+      this.message = "";
+      this.error = "";
     },
   },
 });
