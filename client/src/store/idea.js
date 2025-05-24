@@ -106,7 +106,7 @@ export const useIdeaStore = defineStore("idea", {
         const response = await httpClient.delete("ideas/" + ideaId, {
           headers,
         });
-        if (response.status === 200) {
+        if (response.status === 204) {
           this.message = response.data.message || "Idea deleted successfully!";
           console.log("response", response);
         }

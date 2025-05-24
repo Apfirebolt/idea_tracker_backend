@@ -3,6 +3,7 @@
     <div class="max-w-7xl mx-auto">
       <div class="flex justify-between items-center">
         <h1 class="text-3xl font-bold mb-6 text-gray-800">Dashboard</h1>
+        <Message v-if="ideaMessage || tagMessage" :message="ideaMessage || tagMessage" />
         <div class="flex space-x-2">
           <button
             @click="openIdeaForm"
@@ -158,6 +159,7 @@ import { useIdeaStore } from "../store/idea";
 import { useTagStore } from "../store/tag";
 import IdeaForm from "../components/IdeaForm.vue";
 import TagForm from "../components/TagForm.vue";
+import Message from "../components/Message.vue";
 import { ref, computed, onMounted } from "vue";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-alpine.css";
@@ -207,7 +209,7 @@ const columnDefs = ref([
       deleteBtn.className =
       "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
       deleteBtn.onclick = () => {
-      deleteIdea(params.data);
+      deleteIdea(params.data.id);
       };
 
       container.appendChild(editBtn);
@@ -248,7 +250,7 @@ const tagColumnDefs = ref([
       deleteBtn.className =
       "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
       deleteBtn.onclick = () => {
-      deleteTag(params.data);
+      deleteTag(params.data.id);
       };
 
       container.appendChild(editBtn);
@@ -273,6 +275,8 @@ const modules = ref([ClientSideRowModelModule]);
 
 const ideas = computed(() => ideaStore.ideas);
 const tags = computed(() => tagStore.tags);
+const tagMessage = computed(() => tagStore.getMessage);
+const ideaMessage = computed(() => ideaStore.getMessage);
 
 const defaultColDef = ref({
   flex: 1,
