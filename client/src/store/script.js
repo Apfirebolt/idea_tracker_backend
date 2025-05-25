@@ -25,10 +25,6 @@ export const useScriptStore = defineStore("script", {
   },
 
   actions: {
-    redirectToLogin() {
-      // Redirect to the login page
-      router.push({ name: "Login" });
-    },
     getAuthHeaders() {
       // Call useAuth() inside an action where Pinia is active
       const auth = useAuth();

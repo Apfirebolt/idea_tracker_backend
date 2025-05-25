@@ -35,13 +35,21 @@
             :key="script.id"
             class="bg-white rounded-lg shadow p-5 flex flex-col"
           >
-            
+            <h3 class="text-xl font-semibold mb-2">{{ script.title }}</h3>
             <p class="text-gray-600 mb-4">{{ script.script_content }}</p>
-            <div class="mt-auto flex justify-end">
-              <span class="text-xs text-gray-400"
-                >Created:
-                {{ new Date(script.created_at).toLocaleDateString() }}</span
+            <div class="flex space-x-2 mt-4">
+              <button
+                @click="openEditScriptForm(script)"
+                class="bg-info text-dark px-3 py-1 rounded hover:bg-blue-800 hover:text-light transition text-sm"
               >
+                Edit
+              </button>
+              <button
+                @click="deleteScript(script.id)"
+                class="bg-danger text-white px-3 py-1 rounded hover:bg-red-600 transition text-sm"
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
@@ -134,6 +142,7 @@ import Loader from "../components/Loader.vue";
 const route = useRoute();
 const ideaStore = useIdeaStore();
 const scriptStore = useScriptStore();
+const selectedScript = ref(null);
 const isScriptFormOpen = ref(false);
 const idea = computed(() => ideaStore.getIdea);
 const loading = computed(() => ideaStore.loading);
@@ -149,9 +158,26 @@ const addScript = async (script) => {
   console.log("Adding idea:", script);
   closeScriptForm();
   // add idea_id to the script
+  const ideaId = route.params.ideaId;
   script.idea_id = idea.value.id;
   await scriptStore.addScript(script);
   await ideaStore.getIdeaAction(ideaId);
+};
+
+const deleteScript = async (scriptId) => {
+  console.log("Deleting script with ID:", scriptId);
+  await scriptStore.deleteScript(scriptId);
+  await ideaStore.getIdeaAction(idea.value.id);
+};
+
+const openEditScriptForm = (script) => {
+  isScriptFormOpen.value = true;
+  selectedScript.value = script;
+};
+
+const updateScript = async (script) => {
+  await scriptStore.updateScript(script);
+  await ideaStore.getIdeaAction(idea.value.id);
 };
 
 onMounted(async () => {

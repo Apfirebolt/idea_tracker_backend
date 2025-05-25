@@ -34,6 +34,13 @@ async def create_new_script(
         database.commit()
         database.refresh(new_script)
         return new_script
+
+    except HTTPException as http_exc:
+
+        print(f"HTTP Exception caught: Status {http_exc.status_code}, Detail: {http_exc.detail}")
+        database.rollback()
+        raise http_exc
+
     except Exception as e:
         print(f"Error creating script: {str(e)}")
         database.rollback()
