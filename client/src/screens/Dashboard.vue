@@ -361,7 +361,6 @@ const editTagUtility = async (payload) => {
 };
 
 const goToIdeaDetail = (ideaId) => {
-  console.log("Navigating to idea detail with ID:", ideaId);
   router.push({ name: "IdeaDetail", params: { ideaId } });
 };
 

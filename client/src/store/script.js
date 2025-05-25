@@ -1,25 +1,23 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { toast } from 'vue3-toastify';
+import { toast } from "vue3-toastify";
 import httpClient from "../plugins/interceptor";
 import { useAuth } from "./auth";
 import router from "../routes";
-import emitter from "../plugins/eventBus";
 
-
-export const useIdeaStore = defineStore("idea", {
+export const useScriptStore = defineStore("script", {
   state: () => ({
-    idea: ref({}),
-    ideas: ref([]),
+    script: ref({}),
+    scripts: ref([]),
     loading: ref(false),
   }),
 
   getters: {
-    getIdea() {
-      return this.idea;
+    getScript() {
+      return this.script;
     },
-    getIdeas() {
-      return this.ideas;
+    getScripts() {
+      return this.scripts;
     },
     isLoading() {
       return this.loading;
@@ -38,15 +36,15 @@ export const useIdeaStore = defineStore("idea", {
         Authorization: `Bearer ${auth.authData.access_token}`,
       };
     },
-    async addIdea(ideaData) {
+    async addScript(scriptData) {
       try {
         const headers = this.getAuthHeaders();
         this.loading = true;
-        const response = await httpClient.post("ideas", ideaData, {
+        const response = await httpClient.post("scripts", scriptData, {
           headers,
         });
         if (response.status === 201) {
-          toast.success("Idea added successfully!");
+          toast.success("Script added successfully!");
         }
       } catch (error) {
         if (error.response.status === 400) {
@@ -61,21 +59,21 @@ export const useIdeaStore = defineStore("idea", {
       }
     },
 
-    async getIdeaAction(ideaId) {
+    async getScriptAction(scriptId) {
       try {
         const headers = this.getAuthHeaders();
         this.loading = true;
-        const response = await httpClient.get("ideas/" + ideaId, {
+        const response = await httpClient.get("scripts/" + scriptId, {
           headers,
         });
-        this.idea = response.data;
+        this.script = response.data;
       } catch (error) {
         if (error.status === 401) {
           toast.error("Unauthorized access. Please log in.", {
-              rtl: true,
-              limit: 3,
-              position: toast.POSITION.BOTTOM_CENTER,
-            },);
+            rtl: true,
+            limit: 3,
+            position: toast.POSITION.BOTTOM_CENTER,
+          });
           this.redirectToLogin();
         }
         console.log(error);
@@ -84,14 +82,14 @@ export const useIdeaStore = defineStore("idea", {
       }
     },
 
-    async getIdeasAction(page = 1) {
+    async getScriptsAction(page = 1) {
       try {
         const headers = this.getAuthHeaders();
         this.loading = true;
-        const response = await httpClient.get("ideas?page=" + page, {
+        const response = await httpClient.get("scripts?page=" + page, {
           headers,
         });
-        this.ideas = response.data;
+        this.scripts = response.data;
       } catch (error) {
         console.log(error);
         return error;
@@ -100,15 +98,15 @@ export const useIdeaStore = defineStore("idea", {
       }
     },
 
-    async deleteIdea(ideaId) {
+    async deleteScript(scriptId) {
       try {
         const headers = this.getAuthHeaders();
         this.loading = true;
-        const response = await httpClient.delete("ideas/" + ideaId, {
+        const response = await httpClient.delete("scripts/" + scriptId, {
           headers,
         });
         if (response.status === 204) {
-          toast.success("Idea deleted successfully!");
+          toast.success("Script deleted successfully!");
         }
       } catch (error) {
         console.log(error);
@@ -118,15 +116,19 @@ export const useIdeaStore = defineStore("idea", {
       }
     },
 
-    async updateIdea(ideaData) {
+    async updateScript(scriptData) {
       try {
         const headers = this.getAuthHeaders();
         this.loading = true;
-        const response = await httpClient.put("ideas/" + ideaData.id, ideaData, {
-          headers,
-        });
+        const response = await httpClient.put(
+          "scripts/" + scriptData.id,
+          scriptData,
+          {
+            headers,
+          }
+        );
         if (response.status === 200) {
-          toast.success("Idea updated successfully!");
+          toast.success("Script updated successfully!");
         }
       } catch (error) {
         console.log(error);
@@ -136,9 +138,9 @@ export const useIdeaStore = defineStore("idea", {
       }
     },
 
-    resetIdeaData() {
-      this.idea = {};
-      this.ideas = [];
+    resetScriptData() {
+      this.script = {};
+      this.scripts = [];
     },
   },
 });
