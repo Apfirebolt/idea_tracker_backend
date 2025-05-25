@@ -3,7 +3,6 @@
     <div class="max-w-7xl mx-auto">
       <div class="flex justify-between items-center">
         <h1 class="text-3xl font-bold mb-6 text-gray-800">Dashboard</h1>
-        <Message v-if="ideaMessage || tagMessage" :message="ideaMessage || tagMessage" />
         <div class="flex space-x-2">
           <button
             @click="openIdeaForm"
@@ -159,7 +158,6 @@ import { useIdeaStore } from "../store/idea";
 import { useTagStore } from "../store/tag";
 import IdeaForm from "../components/IdeaForm.vue";
 import TagForm from "../components/TagForm.vue";
-import Message from "../components/Message.vue";
 import { ref, computed, onMounted } from "vue";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-alpine.css";

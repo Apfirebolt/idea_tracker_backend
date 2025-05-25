@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { toast } from 'vue3-toastify';
 import httpClient from "../plugins/interceptor";
 import { useAuth } from "./auth";
 import emitter from "../plugins/eventBus";
@@ -9,8 +10,6 @@ export const useIdeaStore = defineStore("idea", {
   state: () => ({
     idea: ref({}),
     ideas: ref([]),
-    message: ref(""),
-    error: ref(""),
     loading: ref(false),
   }),
 
@@ -23,12 +22,6 @@ export const useIdeaStore = defineStore("idea", {
     },
     isLoading() {
       return this.loading;
-    },
-    getMessage() {
-      return this.message;
-    },
-    getError() {
-      return this.error;
     },
   },
 
@@ -48,25 +41,18 @@ export const useIdeaStore = defineStore("idea", {
           headers,
         });
         if (response.status === 201) {
-          this.message = response.data.message || "Idea created successfully!";
-          console.log("response", response);
+          toast.success("Idea added successfully!");
         }
       } catch (error) {
-        console.log(error);
         if (error.response.status === 400) {
           let message = "Bad request";
           if (error.response.data.detail) {
-            message = error.response.data.message;
+            toast.error(error.response.data.detail);
           }
           console.log("Error message", message);
         }
       } finally {
         this.loading = false;
-        // reset message and error after some time
-        setTimeout(() => {
-          this.message = "";
-          this.error = "";
-        }, 5000);
       }
     },
 
@@ -107,8 +93,7 @@ export const useIdeaStore = defineStore("idea", {
           headers,
         });
         if (response.status === 204) {
-          this.message = response.data.message || "Idea deleted successfully!";
-          console.log("response", response);
+          toast.success("Idea deleted successfully!");
         }
       } catch (error) {
         console.log(error);
@@ -126,27 +111,19 @@ export const useIdeaStore = defineStore("idea", {
           headers,
         });
         if (response.status === 200) {
-          this.message = response.data.message || "Idea updated successfully!";
-          emitter.emit("updateIdea", response.data);
+          toast.success("Idea updated successfully!");
         }
       } catch (error) {
         console.log(error);
         return error;
       } finally {
         this.loading = false;
-        // reset message and error after some time
-        setTimeout(() => {
-          this.message = "";
-          this.error = "";
-        }, 5000);
       }
     },
 
     resetIdeaData() {
       this.idea = {};
       this.ideas = [];
-      this.message = "";
-      this.error = "";
     },
   },
 });

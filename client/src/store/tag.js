@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import httpClient from "../plugins/interceptor";
+import { toast } from 'vue3-toastify';
 import { useAuth } from "./auth";
 import router from "../routes";
 
@@ -8,8 +9,6 @@ export const useTagStore = defineStore("tag", {
   state: () => ({
     tag: ref({}),
     tags: ref([]),
-    message: ref(""),
-    error: ref(""),
     loading: ref(false),
   }),
 
@@ -22,12 +21,6 @@ export const useTagStore = defineStore("tag", {
     },
     isLoading() {
       return this.loading;
-    },
-    getMessage() {
-      return this.message;
-    },
-    getError() {
-      return this.error;
     },
   },
 
@@ -51,23 +44,18 @@ export const useTagStore = defineStore("tag", {
           headers,
         });
         if (response.status === 201) {
-          this.message = "Tag created successfully!";
+          toast.success("Tag added successfully!");
         }
       } catch (error) {
         console.log(error);
         if (error.response.status === 400) {
           let message = "Bad request";
           if (error.response.data.detail) {
-            this.error = error.response.data.detail;
+            toast.error(error.response.data.detail);
           }
         }
       } finally {
         this.loading = false;
-        // reset message and error after some time
-        setTimeout(() => {
-          this.message = "";
-          this.error = "";
-        }, 5000);
       }
     },
 
@@ -94,11 +82,12 @@ export const useTagStore = defineStore("tag", {
         this.tags = response.data;
       } catch (error) {
         if (error.status === 401) {
+          toast.error("Unauthorized access. Please log in.");
           this.redirectToLogin();
         } else if (error.status === 403) {
-          console.log("Forbidden");
+          toast.error("You do not have permission to access this resource.");
         } else if (error.status === 404) {
-          console.log("Tags not found");
+          toast.error("Tags not found.");
         }
         return error;
       } finally {
@@ -114,25 +103,20 @@ export const useTagStore = defineStore("tag", {
           headers,
         });
         if (response.status === 204) {
-          this.message = response.data.message || "Tag deleted successfully!";
+          toast.success("Tag deleted successfully!");
         }
       } catch (error) {
         console.log(error);
         if (error.response && error.response.status === 404) {
-          this.error = "Tag not found!";
+          toast.error("Tag not found.");
         } else if (error.response && error.response.status === 403) {
-          this.error = "You do not have permission to delete this tag.";
+          toast.error("You do not have permission to delete this tag.");
         } else {
-          this.error = "An error occurred while deleting the tag.";
+          toast.error("An error occurred while deleting the tag.");
         }
         return error;
       } finally {
         this.loading = false;
-        // reset message and error after some time
-        setTimeout(() => {
-          this.message = "";
-          this.error = "";
-        }, 5000);
       }
     },
 

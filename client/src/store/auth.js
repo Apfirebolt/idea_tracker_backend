@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { toast } from 'vue3-toastify';
 import Cookie from "js-cookie";
 import router from "../routes";
 import httpClient from "../plugins/interceptor";
@@ -8,8 +9,6 @@ import emitter from '../plugins/eventBus';
 export const useAuth = defineStore("auth", {
   state: () => ({
     authData: Cookie.get("user") ? JSON.parse(Cookie.get("user")) : null,
-    message: ref(""),
-    error: ref(""),
     loading: ref(false),
   }),
 
@@ -28,9 +27,7 @@ export const useAuth = defineStore("auth", {
         const response = await httpClient.post("auth/login", loginData);
         if (response.data) {
           this.authData = response.data;
-          // toast.success("Login successful!");
-          // set the data in cookie
-          this.message = response.data.message || "Login successful!";
+          toast.success("Login successful!");
           Cookie.set("user", JSON.stringify(response.data), { expires: 30 });
           router.push("/dashboard");
         }
@@ -38,17 +35,11 @@ export const useAuth = defineStore("auth", {
         let message = "An error occurred!";
         this.error = error;
         if (error.response && error.response.data) {
-          message = error.response.data.detail || "An error occurred!";
-          this.error = message;
+          toast.error(error.response.data.detail || message);
         }
         return error;
       } finally {
         this.loading = false;
-        // reset message and error after some time
-        setTimeout(() => {
-          this.message = "";
-          this.error = "";
-        }, 5000);
       }
     },
 
@@ -57,26 +48,19 @@ export const useAuth = defineStore("auth", {
         const response = await httpClient.post("auth/register", registerData);
         if (response.data && response.status === 201) {
           this.authData = response.data;
-          // toast.success("Registration successful!");
-          this.message = response.data.message || "Registration successful!";
+          toast.success("Registration successful!");
           Cookie.set("user", JSON.stringify(response.data), { expires: 30 });
           router.push("/dashboard");
         }
       } catch (error) {
-        let message = "An error occurred!";
         if (error.response && error.response.data) {
-          this.message = error.response.data.detail;
+          toast.error(error.response.data.detail);
         }
         // toast.error(message);
         console.log(error);
         return error;
       } finally {
         this.loading = false;
-        // reset message and error after some time
-        setTimeout(() => {
-          this.message = "";
-          this.error = "";
-        }, 5000);
       }
     },
 
@@ -96,6 +80,7 @@ export const useAuth = defineStore("auth", {
     },
 
     logout() {
+      toast.success("Logout successful!");
       emitter.emit('logout');
       this.authData = null;
       Cookie.remove("user");
