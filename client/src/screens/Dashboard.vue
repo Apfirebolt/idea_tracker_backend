@@ -190,13 +190,13 @@ const columnDefs = ref([
     cellRenderer: (params) => {
       const container = document.createElement("div");
       container.style.display = "flex";
-      container.style.gap = "0.5rem";
+      container.style.gap = "1rem";
 
       // Edit button
       const editBtn = document.createElement("button");
       editBtn.innerText = "Edit";
       editBtn.className =
-      "bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600";
+      "bg-secondary text-white px-3 py-1 rounded hover:bg-blue-600";
       editBtn.onclick = () => {
       editIdea(params.data);
       };
@@ -205,7 +205,7 @@ const columnDefs = ref([
       const deleteBtn = document.createElement("button");
       deleteBtn.innerText = "Delete";
       deleteBtn.className =
-      "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
+      "bg-danger text-white px-3 py-1 rounded hover:bg-red-600";
       deleteBtn.onclick = () => {
       deleteIdea(params.data.id);
       };
@@ -237,7 +237,7 @@ const tagColumnDefs = ref([
       const editBtn = document.createElement("button");
       editBtn.innerText = "Edit";
       editBtn.className =
-      "bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600";
+      "bg-secondary text-white px-3 py-1 rounded hover:bg-blue-600";
       editBtn.onclick = () => {
       editTag(params.data);
       };
@@ -246,7 +246,7 @@ const tagColumnDefs = ref([
       const deleteBtn = document.createElement("button");
       deleteBtn.innerText = "Delete";
       deleteBtn.className =
-      "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
+      "bg-danger text-white px-3 py-1 rounded hover:bg-red-600";
       deleteBtn.onclick = () => {
       deleteTag(params.data.id);
       };
@@ -303,8 +303,8 @@ const closeTagForm = () => {
 const addIdea = async (idea) => {
   console.log("Adding idea:", idea);
   closeIdeaForm();
-  // await ideaStore.addIdea(idea);
-  //await ideaStore.getIdeasAction();
+  await ideaStore.addIdea(idea);
+  await ideaStore.getIdeasAction();
 };
 
 const addTag = async (tag) => {

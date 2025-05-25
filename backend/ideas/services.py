@@ -24,11 +24,28 @@ async def create_new_idea(
                 detail="Idea already exists in your collection.",
             )
 
+        # Create the new idea
         new_idea = models.Idea(
             title=request.title,
             description=request.description,
             user_id=current_user.id,
         )
+
+        # Handle tags if provided
+        tags = getattr(request, "tags", None)
+        if tags and isinstance(tags, list):
+            for tag_name in tags:
+                tag = (
+                    database.query(models.Tag)
+                    .filter_by(name=tag_name, user_id=current_user.id)
+                    .first()
+                )
+                if not tag:
+                    tag = models.Tag(name=tag_name, user_id=current_user.id)
+                    database.add(tag)
+                    database.flush()  # Ensure tag.id is available
+                new_idea.tags.append(tag)
+
         database.add(new_idea)
         database.commit()
         database.refresh(new_idea)
@@ -98,6 +115,23 @@ async def update_idea_by_id(
         idea.title = request.title or idea.title
         idea.description = request.description or idea.description
 
+        # update tags if provided
+        if hasattr(request, "tags") and isinstance(request.tags, list):
+            # clear existing tags
+            idea.tags.clear()
+            for tag_name in request.tags:
+                tag = (
+                    database.query(models.Tag)
+                    .filter_by(name=tag_name, user_id=current_user.id)
+                    .first()
+                )
+                if not tag:
+                    tag = models.Tag(name=tag_name, user_id=current_user.id)
+                    database.add(tag)
+                    database.flush()
+                
+                idea.tags.append(tag)
+
         database.commit()
         database.refresh(idea)
         return idea
@@ -136,44 +170,4 @@ async def delete_idea_by_id(idea_id, current_user: User, database: Session):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while deleting the idea: {str(e)}",
-        )
-    
-
-async def add_tags_to_idea(
-    idea_id, tags, current_user: User, database: Session
-) -> models.Idea:
-    try:
-        # check if idea belongs to the user
-        idea = (
-            database.query(models.Idea)
-            .filter_by(id=idea_id, user_id=current_user.id)
-            .first()
-        )
-        if not idea:
-            raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Idea Not Found!"
-            )
-
-        # add tags to the idea
-        for tag in tags:
-            existing_tag = (
-                database.query(models.Tag)
-                .filter_by(name=tag, user_id=current_user.id)
-                .first()
-            )
-            if existing_tag:
-                idea.tags.append(existing_tag)
-        
-        database.commit()
-        database.refresh(idea)
-        return idea
-
-    except HTTPException as http_exc:
-        raise http_exc
-    
-    except Exception as e:
-        database.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An unexpected error occurred while adding tags to the idea: {str(e)}",
         )

@@ -45,3 +45,15 @@ alembic upgrade head
 ```
 pip install 'pydantic[email]'
 ```
+
+### Steps to clean database
+
+```
+rm alembic/versions*.py
+```
+
+This would remove all the migration files inside the Alembic folder. Then, you can delete the tables in the database and start fresh.
+
+```
+ alembic revision --autogenerate -m "initial migrations added"
+```

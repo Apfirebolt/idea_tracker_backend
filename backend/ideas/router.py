@@ -14,7 +14,7 @@ from backend.tags.schema import AddTag
 router = APIRouter(tags=["Idea"], prefix="/api/ideas")
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schema.IdeaBase)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schema.IdeaCreateResponse)
 async def create_new_idea(
     request: schema.IdeaBase,
     database: Session = Depends(db.get_db),
@@ -57,7 +57,7 @@ async def delete_idea_by_id(
 
 
 @router.put(
-    "/{idea_id}", status_code=status.HTTP_200_OK, response_model=schema.IdeaBase
+    "/{idea_id}", status_code=status.HTTP_200_OK, response_model=schema.IdeaCreateResponse
 )
 async def update_idea_by_id(
     idea_id: int,

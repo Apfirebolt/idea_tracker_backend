@@ -35,8 +35,8 @@ class Tag(Base):
 class IdeaTag(Base):
     __tablename__ = "idea_tags"
 
-    id = Column(Integer, primary_key=True, index=True)
-    idea_id = Column(Integer, ForeignKey("ideas.id"), primary_key=True)
-    tag_id = Column(Integer, ForeignKey("tags.id"), primary_key=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    idea_id = Column(Integer, ForeignKey("ideas.id", ondelete="CASCADE"), primary_key=True)
+    tag_id = Column(Integer, ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True)
 
 

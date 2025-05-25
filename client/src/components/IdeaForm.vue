@@ -5,38 +5,38 @@
   >
     <div class="mb-4">
       <label for="title" class="block text-gray-700 font-bold mb-2"
-      >Title</label
+        >Title</label
       >
       <div class="relative">
-      <input
-        id="title"
-        v-model="form.title"
-        type="text"
-        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300 pr-10"
-        required
-        placeholder="Enter idea title"
-      />
-      <PencilAltIcon
-        class="w-5 h-5 text-gray-400 absolute right-3 top-3 pointer-events-none"
-      />
+        <input
+          id="title"
+          v-model="form.title"
+          type="text"
+          class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300 pr-10"
+          required
+          placeholder="Enter idea title"
+        />
+        <PencilAltIcon
+          class="w-5 h-5 text-gray-400 absolute right-3 top-3 pointer-events-none"
+        />
       </div>
     </div>
     <div class="mb-4">
       <label for="description" class="block text-gray-700 font-bold mb-2"
-      >Description</label
+        >Description</label
       >
       <div class="relative">
-      <textarea
-        id="description"
-        v-model="form.description"
-        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300 pr-10"
-        rows="4"
-        required
-        placeholder="Describe your idea"
-      ></textarea>
-      <PencilAltIcon
-        class="w-5 h-5 text-gray-400 absolute right-3 top-3 pointer-events-none"
-      />
+        <textarea
+          id="description"
+          v-model="form.description"
+          class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300 pr-10"
+          rows="4"
+          required
+          placeholder="Describe your idea"
+        ></textarea>
+        <PencilAltIcon
+          class="w-5 h-5 text-gray-400 absolute right-3 top-3 pointer-events-none"
+        />
       </div>
     </div>
     <div class="mb-4">
@@ -53,26 +53,26 @@
           />
         </span>
       </div>
-      <label for="tags" class="block text-gray-700 font-bold mb-2"
-        >Tags</label
-      >
+      <label for="tags" class="block text-gray-700 font-bold mb-2">Tags</label>
       <select
         id="tags"
         v-model="form.tags"
         multiple
         class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
       >
-        <option v-for="tag in props.tags" :key="tag" :value="tag.name">{{ tag.name }}</option>
+        <option v-for="tag in props.tags" :key="tag" :value="tag.name" class="bg-secondary py-2 px-1 text-white text-center">
+          {{ tag.name }}
+        </option>
       </select>
     </div>
     <button
       type="submit"
       :disabled="isIdeaFormDisabled"
       :class="[
-      'px-4 py-2 rounded transition',
-      isIdeaFormDisabled
-        ? 'bg-secondary text-white cursor-not-allowed'
-        : 'bg-tertiary text-white hover:bg-blue-700'
+        'px-4 py-2 rounded transition',
+        isIdeaFormDisabled
+          ? 'bg-secondary text-white cursor-not-allowed'
+          : 'bg-tertiary text-white hover:bg-blue-700',
       ]"
     >
       Submit
@@ -81,14 +81,10 @@
 </template>
 
 <script setup>
-import { reactive, onMounted, computed } from "vue"
-import { toast } from 'vue3-toastify';
-import {
-  XCircleIcon,
-  PencilAltIcon,
-  PlusIcon,
-} from "@heroicons/vue/solid";
-const emit = defineEmits(['addIdea', 'close', 'updateIdea']);
+import { reactive, onMounted, computed } from "vue";
+import { toast } from "vue3-toastify";
+import { XCircleIcon, PencilAltIcon, PlusIcon } from "@heroicons/vue/solid";
+const emit = defineEmits(["addIdea", "close", "updateIdea"]);
 
 const props = defineProps({
   idea: {
@@ -136,7 +132,7 @@ function submitForm() {
 
 const deselectTags = (id) => {
   // Deselect a tag by removing it from the form.tags array
-  form.tags = form.tags.filter(tag => tag !== id);
+  form.tags = form.tags.filter((tag) => tag !== id);
   toast.info(`Tag "${id}" deselected.`);
 };
 
@@ -150,6 +146,8 @@ onMounted(() => {
   if (props.idea) {
     form.title = props.idea.title;
     form.description = props.idea.description;
+    // populate tags with tag name if tags are present in the idea
+    form.tags = props.idea.tags ? props.idea.tags.map(tag => tag.name) : [];
   }
 });
 </script>

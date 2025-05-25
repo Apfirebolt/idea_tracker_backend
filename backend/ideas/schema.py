@@ -1,17 +1,27 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr
-from backend.tags.schema import TagList
+from backend.tags.schema import TagList, TagBase
 
 
 class IdeaBase(BaseModel):
     title: str
     description: str
+    tags: Optional[list[str]] = None
+
+
+class IdeaCreateResponse(BaseModel):
+    title: str
+    description: str
+    
+    tags: Optional[list[TagList]] = None
+    
 
 
 class IdeaUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
+    tags : Optional[list[str]] = None
 
 
 class IdeaList(BaseModel):
@@ -21,7 +31,7 @@ class IdeaList(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    tags: Optional[list[TagList]] = None
+    tags: Optional[list[TagBase]] = None
 
 
 class UserSchema(BaseModel):
