@@ -26,6 +26,7 @@ async def create_new_script(
 
         new_script = models.IdeaScript(
             idea_id=request.idea_id,
+            title=request.title,
             script_content=request.script_content,
             user_id=current_user.id,
         )
@@ -93,6 +94,7 @@ async def update_script_by_id(
 
         # update script details
         script.script_content = request.script_content or script.script_content
+        script.title = request.title or script.title
 
         database.commit()
         database.refresh(script)

@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class ScriptBase(BaseModel):
     idea_id: int
+    title: str
     script_content: str
 
 

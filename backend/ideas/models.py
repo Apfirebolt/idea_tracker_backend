@@ -62,6 +62,7 @@ class IdeaScript(Base):
     id = Column(Integer, primary_key=True, index=True)
     idea_id = Column(Integer, ForeignKey("ideas.id", ondelete="CASCADE"), nullable=False)
     user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    title = Column(String(255), nullable=True)
     script_content = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
