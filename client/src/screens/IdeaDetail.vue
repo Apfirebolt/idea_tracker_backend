@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen mt-16 bg-gray-100 p-8">
     <div class="max-w-7xl mx-auto">
-      <div v-if="idea" class="flex justify-between items-center">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">{{ idea.title }}</h1>
+      <div v-if="idea" class="flex justify-between items-center bg-white px-4 py-3">
+        <h1 class="text-3xl font-bold text-primary">{{ idea.title }}</h1>
 
         <div class="flex space-x-2">
           <button
@@ -15,25 +15,25 @@
         </div>
       </div>
 
-      <div v-if="idea.tags && idea.tags.length">
-        <h2 class="font-semibold mb-1">Tags:</h2>
-        <div class="flex flex-wrap gap-2">
+      <div v-if="idea.tags && idea.tags.length" class="mt-4">
+        <h2 class="font-semibold mb-4 text-2xl text-center text-primary bg-white p-2">Tags:</h2>
+        <div class="flex flex-wrap justify-center gap-2">
           <span
             v-for="tag in idea.tags"
             :key="tag.id"
-            class="bg-secondary text-white px-2 py-1 rounded text-sm"
+            class="bg-secondary text-white px-2 py-1 rounded"
           >
             {{ tag.name }}
           </span>
         </div>
       </div>
-      <div v-if="idea.scripts && idea.scripts.length" class="mt-8">
-        <h2 class="font-semibold mb-4 text-lg">Scripts</h2>
+      <div v-if="idea.scripts && idea.scripts.length" class="mt-4">
+        <h2 class="font-semibold mb-4 text-2xl text-center text-primary bg-white p-2">Scripts</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
             v-for="script in idea.scripts"
             :key="script.id"
-            class="bg-white rounded-lg shadow p-5 flex flex-col"
+            class="bg-white rounded-lg shadow-lg p-5 flex flex-col"
           >
             <h3 class="text-xl font-semibold mb-2">{{ script.title }}</h3>
             <p class="text-gray-600 mb-4">{{ script.script_content }}</p>
@@ -113,7 +113,7 @@
                 >
                   Add Script Form
                 </DialogTitle>
-                <ScriptForm @close="closeScriptForm" @addScript="addScript" />
+                <ScriptForm @close="closeScriptForm" @addScript="addScript" :script="selectedScript" @updateScript="updateScript" />
               </DialogPanel>
             </TransitionChild>
           </div>

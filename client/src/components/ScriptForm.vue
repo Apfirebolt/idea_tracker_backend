@@ -70,8 +70,14 @@ const form = reactive({
 });
 
 function submitForm() {
-  console.log("Submitting script form", form);
-  emit("addScript", form);
+  if (props.script) {
+    emit("updateScript", { ...props.script, ...form });
+  } else {
+    emit("addScript", form);
+  }
+  form.script_content = "";
+  form.title = "";
+  emit("close");
 }
 
 onMounted(() => {
