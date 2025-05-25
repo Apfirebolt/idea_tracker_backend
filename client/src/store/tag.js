@@ -82,7 +82,11 @@ export const useTagStore = defineStore("tag", {
         this.tags = response.data;
       } catch (error) {
         if (error.status === 401) {
-          toast.error("Unauthorized access. Please log in.");
+          toast.error("Unauthorized access. Please log in.", {
+              rtl: true,
+              limit: 3,
+              position: toast.POSITION.BOTTOM_CENTER,
+            },);
           this.redirectToLogin();
         } else if (error.status === 403) {
           toast.error("You do not have permission to access this resource.");

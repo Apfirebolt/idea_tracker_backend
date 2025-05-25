@@ -96,7 +96,7 @@
               >
                 <DialogTitle
                   as="h3"
-                  class="text-lg font-medium leading-6 text-center my-3 text-gray-900"
+                  class="text-lg font-medium leading-6 text-center my-3 p-2 bg-secondary text-gray-900"
                 >
                   Add Tag Form
                 </DialogTitle>
@@ -139,7 +139,7 @@
               >
                 <DialogTitle
                   as="h3"
-                  class="text-lg font-medium leading-6 text-center my-3 text-gray-900"
+                  class="text-lg font-medium leading-6 text-center my-3 bg-secondary p-2 text-gray-900"
                 >
                   Add Idea Form
                 </DialogTitle>
@@ -301,9 +301,10 @@ const closeTagForm = () => {
 };
 
 const addIdea = async (idea) => {
+  console.log("Adding idea:", idea);
   closeIdeaForm();
-  await ideaStore.addIdea(idea);
-  await ideaStore.getIdeasAction();
+  // await ideaStore.addIdea(idea);
+  //await ideaStore.getIdeasAction();
 };
 
 const addTag = async (tag) => {
