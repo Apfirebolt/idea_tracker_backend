@@ -29,9 +29,41 @@
         placeholder="Describe your idea"
       ></textarea>
     </div>
+    <div class="mb-4">
+      <div class="mb-2">
+        <span
+          v-for="tag in form.tags"
+          :key="tag"
+          class="inline-flex items-center bg-primary text-white text-xs px-3 py-2 rounded mr-2 mb-1"
+        >
+          {{ tag }}
+          <XCircleIcon
+            class="w-6 h-6 ml-1 cursor-pointer text-white hover:text-red-500"
+            @click="deselectTags(tag)"
+          />
+        </span>
+      </div>
+      <label for="tags" class="block text-gray-700 font-bold mb-2"
+        >Tags</label
+      >
+      <select
+        id="tags"
+        v-model="form.tags"
+        multiple
+        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+      >
+        <option v-for="tag in props.tags" :key="tag" :value="tag.name">{{ tag.name }}</option>
+      </select>
+    </div>
     <button
       type="submit"
-      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+      :disabled="isIdeaFormDisabled"
+      :class="[
+      'px-4 py-2 rounded transition',
+      isIdeaFormDisabled
+        ? 'bg-secondary text-white cursor-not-allowed'
+        : 'bg-tertiary text-white hover:bg-blue-700'
+      ]"
     >
       Submit
     </button>
@@ -39,7 +71,11 @@
 </template>
 
 <script setup>
-import { reactive, onMounted } from "vue"
+import { reactive, onMounted, computed } from "vue"
+import { toast } from 'vue3-toastify';
+import {
+  XCircleIcon,
+} from "@heroicons/vue/solid";
 const emit = defineEmits(['addIdea', 'close', 'updateIdea']);
 
 const props = defineProps({
@@ -49,15 +85,35 @@ const props = defineProps({
       title: "",
       description: "",
     }),
-  }
+  },
+  tags: {
+    type: Array,
+    default: () => [],
+  },
+});
+
+const isIdeaFormDisabled = computed(() => {
+  // Disable form if there are no tags available
+  return props.tags.length === 0;
 });
 
 const form = reactive({
   title: "",
   description: "",
+  tags: [],
 });
 
 function submitForm() {
+  // check if title and description are not empty
+  if (!form.title.trim() || !form.description.trim()) {
+    toast.error("Title and description cannot be empty.");
+    return;
+  }
+  // check if at least one tag is selected
+  if (form.tags.length === 0) {
+    toast.error("Please select at least one tag.");
+    return;
+  }
   // Handle form submission logic here
   if (props.idea) {
     emit("updateIdea", { ...props.idea, ...form });
@@ -66,7 +122,19 @@ function submitForm() {
   }
 }
 
+const deselectTags = (id) => {
+  // Deselect a tag by removing it from the form.tags array
+  form.tags = form.tags.filter(tag => tag !== id);
+  toast.info(`Tag "${id}" deselected.`);
+};
+
 onMounted(() => {
+  // if there are no tags, set the error and ask user to add tags
+  if (props.tags.length === 0) {
+    toast.error("Please add tags before submitting an idea.");
+    return;
+  }
+
   if (props.idea) {
     form.title = props.idea.title;
     form.description = props.idea.description;

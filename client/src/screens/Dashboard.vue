@@ -143,7 +143,7 @@
                 >
                   Add Idea Form
                 </DialogTitle>
-                <IdeaForm @close="closeIdeaForm" @addIdea="addIdea" @updateIdea="editIdeaUtility" :idea="selectedIdea" />
+                <IdeaForm @close="closeIdeaForm" @addIdea="addIdea" @updateIdea="editIdeaUtility" :idea="selectedIdea" :tags="tags" />
               </DialogPanel>
             </TransitionChild>
           </div>
@@ -271,10 +271,8 @@ const selectedIdea = ref(null);
 const selectedTag = ref(null);
 const modules = ref([ClientSideRowModelModule]);
 
-const ideas = computed(() => ideaStore.ideas);
-const tags = computed(() => tagStore.tags);
-const tagMessage = computed(() => tagStore.getMessage);
-const ideaMessage = computed(() => ideaStore.getMessage);
+const ideas = computed(() => ideaStore.getIdeas);
+const tags = computed(() => tagStore.getTags);
 
 const defaultColDef = ref({
   flex: 1,
