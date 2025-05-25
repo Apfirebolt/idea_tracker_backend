@@ -60,8 +60,32 @@
         multiple
         class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
       >
-        <option v-for="tag in props.tags" :key="tag" :value="tag.name" class="bg-secondary py-2 px-1 text-white text-center">
+        <option
+          v-for="tag in props.tags"
+          :key="tag"
+          :value="tag.name"
+          class="bg-secondary py-2 px-1 text-white text-center"
+        >
           {{ tag.name }}
+        </option>
+      </select>
+    </div>
+
+    <div v-if="props.idea" class="mb-4">
+      <label for="status" class="block text-gray-700 font-bold mb-2"
+        >Status</label
+      >
+      <select
+        id="status"
+        v-model="selectedStatus"
+        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+      >
+        <option
+          v-for="option in statusOptions"
+          :key="option.value"
+          :value="option.value"
+        >
+          {{ option.label }}
         </option>
       </select>
     </div>
@@ -69,10 +93,10 @@
       type="submit"
       :disabled="isIdeaFormDisabled"
       :class="[
-      'flex items-center justify-center gap-2 px-4 py-2 rounded transition',
-      isIdeaFormDisabled
-        ? 'bg-secondary text-white cursor-not-allowed'
-        : 'bg-tertiary text-white hover:bg-blue-700',
+        'flex items-center justify-center gap-2 px-4 py-2 rounded transition',
+        isIdeaFormDisabled
+          ? 'bg-secondary text-white cursor-not-allowed'
+          : 'bg-tertiary text-white hover:bg-blue-700',
       ]"
     >
       <PlusIcon class="w-5 h-5" />
@@ -82,7 +106,7 @@
 </template>
 
 <script setup>
-import { reactive, onMounted, computed } from "vue";
+import { reactive, onMounted, computed, ref } from "vue";
 import { toast } from "vue3-toastify";
 import { XCircleIcon, PencilAltIcon, PlusIcon } from "@heroicons/vue/solid";
 const emit = defineEmits(["addIdea", "close", "updateIdea"]);
@@ -112,6 +136,14 @@ const form = reactive({
   tags: [],
 });
 
+const statusOptions = ref([
+  { value: "draft", label: "Draft" },
+  { value: "open", label: "Open" },
+  { value: "in-progress", label: "In Progress" },
+  { value: "closed", label: "Closed" },
+]);
+const selectedStatus = ref(statusOptions.value[0].value);
+
 function submitForm() {
   // check if title and description are not empty
   if (!form.title.trim() || !form.description.trim()) {
@@ -125,6 +157,8 @@ function submitForm() {
   }
   // Handle form submission logic here
   if (props.idea) {
+    // merge status and tags with the existing idea
+    form.status = selectedStatus.value; // Add status to the form
     emit("updateIdea", { ...props.idea, ...form });
   } else {
     emit("addIdea", form);
@@ -148,7 +182,7 @@ onMounted(() => {
     form.title = props.idea.title;
     form.description = props.idea.description;
     // populate tags with tag name if tags are present in the idea
-    form.tags = props.idea.tags ? props.idea.tags.map(tag => tag.name) : [];
+    form.tags = props.idea.tags ? props.idea.tags.map((tag) => tag.name) : [];
   }
 });
 </script>

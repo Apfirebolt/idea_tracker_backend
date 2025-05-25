@@ -21,12 +21,14 @@ class IdeaUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     tags: Optional[list[str]] = None
+    status: Optional[str] = None
 
 
 class IdeaList(BaseModel):
     id: Optional[int]
     title: str
     description: Optional[str]
+    status: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

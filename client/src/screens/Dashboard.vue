@@ -178,6 +178,7 @@ import {
 const columnDefs = ref([
   { field: "id", headerName: "ID", sortable: true, filter: true },
   { field: "title", headerName: "Name", sortable: true, filter: true },
+  { field: "status", headerName: "Status", sortable: true, filter: true },
   {
     field: "description",
     headerName: "Description",

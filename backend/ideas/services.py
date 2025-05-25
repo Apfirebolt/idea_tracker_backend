@@ -113,6 +113,7 @@ async def update_idea_by_id(
         # update idea details
         idea.title = request.title or idea.title
         idea.description = request.description or idea.description
+        idea.status = request.status or idea.status
 
         # update tags if provided
         if hasattr(request, "tags") and isinstance(request.tags, list):
