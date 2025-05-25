@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-8">
+  <div class="min-h-screen mt-16 bg-gray-100 p-8">
     <div class="max-w-7xl mx-auto">
       <div v-if="idea" class="flex justify-between items-center">
         <h1 class="text-3xl font-bold mb-6 text-gray-800">{{ idea.title }}</h1>
-        
+
         <div class="flex space-x-2">
           <button
             @click="openScriptForm"
@@ -14,18 +14,41 @@
           </button>
         </div>
       </div>
+      
       <div v-if="idea.tags && idea.tags.length">
-          <h2 class="font-semibold mb-1">Tags:</h2>
-          <div class="flex flex-wrap gap-2">
-            <span
-              v-for="tag in idea.tags"
-              :key="tag.id"
-              class="bg-secondary text-white px-2 py-1 rounded text-sm"
-            >
-              {{ tag.name }}
-            </span>
-          </div>
+        <h2 class="font-semibold mb-1">Tags:</h2>
+        <div class="flex flex-wrap gap-2">
+          <span
+            v-for="tag in idea.tags"
+            :key="tag.id"
+            class="bg-secondary text-white px-2 py-1 rounded text-sm"
+          >
+            {{ tag.name }}
+          </span>
         </div>
+      </div>
+      <div class="mt-6">
+        <router-link
+          to="-1"
+          class="inline-flex items-center text-primary hover:underline"
+          @click.prevent="$router.back()"
+        >
+          <svg
+            class="w-5 h-5 mr-1"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          Back
+        </router-link>
+      </div>
     </div>
     <TransitionRoot appear :show="isScriptFormOpen" as="template">
       <Dialog as="div" @close="closeScriptForm" class="relative z-10">
@@ -63,10 +86,7 @@
                 >
                   Add Script Form
                 </DialogTitle>
-                <ScriptForm
-                  @close="closeScriptForm"
-                  @addTag="addScript"
-                />
+                <ScriptForm @close="closeScriptForm" @addTag="addScript" />
               </DialogPanel>
             </TransitionChild>
           </div>

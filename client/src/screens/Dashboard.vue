@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-8">
+  <div class="min-h-screen mt-16 bg-gray-100 p-8">
     <div class="max-w-7xl mx-auto">
       <div class="flex justify-between items-center">
         <h1 class="text-3xl font-bold mb-6 text-gray-800">Dashboard</h1>
@@ -30,7 +30,7 @@
           <span class="text-gray-500 mt-2">Tags</span>
         </div>
         <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-          <span class="text-2xl font-semibold text-tertiary">5</span>
+          <span class="text-2xl font-semibold text-tertiary">{{ completedIdeas ? completedIdeas : 0 }}</span>
           <span class="text-gray-500 mt-2">Completed</span>
         </div>
       </div>
@@ -286,6 +286,7 @@ const modules = ref([ClientSideRowModelModule]);
 
 const ideas = computed(() => ideaStore.getIdeas);
 const tags = computed(() => tagStore.getTags);
+const completedIdeas = computed(() => ideaStore.getCompletedIdeasCount);
 
 const defaultColDef = ref({
   flex: 1,

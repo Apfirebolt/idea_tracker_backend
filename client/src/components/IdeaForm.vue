@@ -140,6 +140,8 @@ const statusOptions = ref([
   { value: "draft", label: "Draft" },
   { value: "open", label: "Open" },
   { value: "in-progress", label: "In Progress" },
+  { value: "on-hold", label: "On Hold" },
+  { value: "completed", label: "Completed" },
   { value: "closed", label: "Closed" },
 ]);
 const selectedStatus = ref(statusOptions.value[0].value);

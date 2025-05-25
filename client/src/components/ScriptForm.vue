@@ -34,8 +34,7 @@
 
 <script setup>
 import { reactive, onMounted } from "vue";
-import { toast } from "vue3-toastify";
-import { XCircleIcon, PencilAltIcon, PlusIcon } from "@heroicons/vue/solid";
+import { PencilAltIcon, PlusIcon } from "@heroicons/vue/solid";
 
 const props = defineProps({
   script: {

@@ -21,6 +21,9 @@ export const useIdeaStore = defineStore("idea", {
     getIdeas() {
       return this.ideas;
     },
+    getCompletedIdeasCount() {
+      return this.ideas && this.ideas.items && this.ideas.items.filter(idea => idea.status === 'completed').length;
+    },
     isLoading() {
       return this.loading;
     },
