@@ -15,9 +15,12 @@ class Idea(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     status = Column(String(50), default="draft", nullable=False)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    is_shared = Column(Integer, default=0, nullable=True)  # 0 for private, 1 for shared
 
     user = relationship("User", back_populates="ideas")
     tags = relationship("Tag", secondary="idea_tags", back_populates="ideas")
+    scripts = relationship("IdeaScript", back_populates="idea", cascade="all, delete-orphan")
+    comments = relationship("IdeaComment", back_populates="idea", cascade="all, delete-orphan")
 
 
 class Tag(Base):
@@ -40,4 +43,27 @@ class IdeaTag(Base):
     idea_id = Column(Integer, ForeignKey("ideas.id", ondelete="CASCADE"), primary_key=True)
     tag_id = Column(Integer, ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True)
 
+
+class IdeaComment(Base):
+    __tablename__ = "idea_comments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    idea_id = Column(Integer, ForeignKey("ideas.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    content = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    idea = relationship("Idea", back_populates="comments")
+
+
+class IdeaScript(Base):
+    __tablename__ = "idea_scripts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    idea_id = Column(Integer, ForeignKey("ideas.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    script_content = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    idea = relationship("Idea", back_populates="scripts")
 

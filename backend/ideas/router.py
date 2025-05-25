@@ -38,7 +38,7 @@ async def idea_list(
 
 
 @router.get(
-    "/{idea_id}", status_code=status.HTTP_200_OK, response_model=schema.IdeaBase
+    "/{idea_id}", status_code=status.HTTP_200_OK, response_model=schema.IdeaList
 )
 async def get_idea_by_id(
     idea_id: int,

@@ -15,6 +15,11 @@ const routes = [
         component: Dashboard
     },
     {
+        path: '/ideas/:ideaId',
+        name: 'IdeaDetail',
+        component: () => import('../screens/IdeaDetail.vue')
+    },
+    {
         path: '/login',
         name: 'Login',
         component: () => import('../screens/Login.vue')

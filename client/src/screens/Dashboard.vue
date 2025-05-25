@@ -155,6 +155,7 @@
 
 <script setup>
 import { useIdeaStore } from "../store/idea";
+import { useRouter } from "vue-router";
 import { useTagStore } from "../store/tag";
 import IdeaForm from "../components/IdeaForm.vue";
 import TagForm from "../components/TagForm.vue";
@@ -211,6 +212,16 @@ const columnDefs = ref([
       deleteIdea(params.data.id);
       };
 
+      // View button
+      const viewBtn = document.createElement("button");
+      viewBtn.innerText = "View";
+      viewBtn.className =
+      "bg-success text-white px-3 py-1 rounded hover:bg-blue-600";
+      viewBtn.onclick = () => {
+        goToIdeaDetail(params.data.id);
+      };
+
+      container.appendChild(viewBtn);
       container.appendChild(editBtn);
       container.appendChild(deleteBtn);
 
@@ -264,6 +275,7 @@ const tagColumnDefs = ref([
   },
 ]);
 
+const router = useRouter();
 const ideaStore = useIdeaStore();
 const tagStore = useTagStore();
 const isIdeaFormOpen = ref(false);
@@ -346,6 +358,11 @@ const editTagUtility = async (payload) => {
   await tagStore.getTagsAction();
   closeTagForm();
   selectedTag.value = null;
+};
+
+const goToIdeaDetail = (ideaId) => {
+  console.log("Navigating to idea detail with ID:", ideaId);
+  router.push({ name: "IdeaDetail", params: { ideaId } });
 };
 
 onMounted(async () => {

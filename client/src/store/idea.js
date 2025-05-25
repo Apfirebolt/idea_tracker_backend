@@ -66,6 +66,8 @@ export const useIdeaStore = defineStore("idea", {
         this.idea = response.data;
       } catch (error) {
         console.log(error);
+      } finally {
+        this.loading = false;
       }
     },
 
