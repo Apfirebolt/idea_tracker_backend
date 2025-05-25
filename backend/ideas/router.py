@@ -1,5 +1,8 @@
 from typing import List
 from fastapi import APIRouter, Depends, status, Response
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate as sqlalchemy_paginate
+
 from sqlalchemy.orm import Session
 from backend.auth.jwt import get_current_user
 from backend.auth.models import User
@@ -25,13 +28,13 @@ async def create_new_idea(
     return result
 
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=List[schema.IdeaList])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=Page[schema.IdeaList])
 async def idea_list(
     database: Session = Depends(db.get_db),
     current_user: User = Depends(get_current_user),
 ):
-    result = await services.get_idea_listing(database, current_user.id)
-    return result
+    idea_query = await services.get_idea_listing(database, current_user.id) # Renamed service function slightly
+    return sqlalchemy_paginate(database,idea_query)
 
 
 @router.get(

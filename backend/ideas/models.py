@@ -13,6 +13,7 @@ class Idea(Base):
     description = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    status = Column(String(50), default="draft", nullable=False)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
 
     user = relationship("User", back_populates="ideas")

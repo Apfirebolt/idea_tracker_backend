@@ -1,5 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import ValidationError, field_validator
 
 
 class User(BaseModel):
@@ -7,6 +8,23 @@ class User(BaseModel):
     email: EmailStr
     password: str
 
+
+    @field_validator('username')
+    @classmethod
+    def username_min_length(cls, v):
+        if len(v) < 4:
+            raise ValueError('Username must be at least 4 characters long')
+        return v
+    
+    @field_validator('password')
+    @classmethod
+    def password_min_length(cls, v):
+        if len(v) < 6:
+            raise ValueError('Password must be at least 6 characters long')
+        return v
+    
+
+    model_config = ConfigDict(from_attributes=True)
 
 class DisplayAccount(BaseModel):
     id: int

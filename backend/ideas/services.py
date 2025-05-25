@@ -60,16 +60,15 @@ async def create_new_idea(
 
 async def get_idea_listing(database, current_user) -> List[models.Idea]:
     try:
-        ideas = (
+        query = (
             database.query(models.Idea)
             .filter(models.Idea.user_id == current_user)
-            .all()
         )
-        return ideas
+        return query
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while fetching ideas: {str(e)}",
+            detail=f"An error occurred while preparing the idea query: {str(e)}",
         )
 
 
