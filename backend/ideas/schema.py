@@ -13,15 +13,14 @@ class IdeaBase(BaseModel):
 class IdeaCreateResponse(BaseModel):
     title: str
     description: str
-    
+
     tags: Optional[list[TagList]] = None
-    
 
 
 class IdeaUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
-    tags : Optional[list[str]] = None
+    tags: Optional[list[str]] = None
 
 
 class IdeaList(BaseModel):
@@ -37,3 +36,20 @@ class IdeaList(BaseModel):
 class UserSchema(BaseModel):
     username: str
     email: EmailStr
+
+
+class IdeaItemSchema(BaseModel):
+    id: int
+    title: str
+    description: Optional[str]
+    created_at: datetime
+    updated_at: datetime
+    tags: Optional[list[TagBase]] = None
+
+
+class PaginatedIdeaList(BaseModel):
+    items: list[IdeaItemSchema]
+    total: int
+    page: int
+    size: int
+    pages: int

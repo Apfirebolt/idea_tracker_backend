@@ -69,12 +69,13 @@
       type="submit"
       :disabled="isIdeaFormDisabled"
       :class="[
-        'px-4 py-2 rounded transition',
-        isIdeaFormDisabled
-          ? 'bg-secondary text-white cursor-not-allowed'
-          : 'bg-tertiary text-white hover:bg-blue-700',
+      'flex items-center justify-center gap-2 px-4 py-2 rounded transition',
+      isIdeaFormDisabled
+        ? 'bg-secondary text-white cursor-not-allowed'
+        : 'bg-tertiary text-white hover:bg-blue-700',
       ]"
     >
+      <PlusIcon class="w-5 h-5" />
       Submit
     </button>
   </form>

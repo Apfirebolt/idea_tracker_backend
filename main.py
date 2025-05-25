@@ -1,4 +1,5 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi_pagination import add_pagination
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 import uvicorn
@@ -18,6 +19,9 @@ app = FastAPI(title="Fast API Ticket Master App",
 origins = ["http://localhost:8080", "http://localhost:3000",]
 
 logger = logging.getLogger("my_fastapi_app")
+
+# Add pagination
+add_pagination(app)
 
 app.add_middleware(
     CORSMiddleware,

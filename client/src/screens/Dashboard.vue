@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen mt-16 bg-gray-100 p-8">
+  <div class="min-h-screen bg-gray-100 p-8">
     <div class="max-w-7xl mx-auto">
       <div class="flex justify-between items-center">
         <h1 class="text-3xl font-bold mb-6 text-gray-800">Dashboard</h1>
@@ -22,7 +22,7 @@
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-          <span class="text-2xl font-semibold text-tertiary">{{ ideas.length ? ideas.length : 0 }}</span>
+          <span class="text-2xl font-semibold text-tertiary">{{ ideas.items && ideas.items.length ? ideas.items.length : 0 }}</span>
           <span class="text-gray-500 mt-2">Ideas</span>
         </div>
         <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
@@ -38,11 +38,11 @@
       <div class="bg-light rounded-lg shadow p-6">
         <h2 class="text-xl font-semibold mb-4 text-gray-700">Recent Ideas</h2>
         <ag-grid-vue
-          v-if="ideas.length"
+          v-if="ideas.items && ideas.items.length"
           class="ag-theme-alpine"
           style="width: 100%; height: 400px"
           :columnDefs="columnDefs"
-          :rowData="ideas"
+          :rowData="ideas.items"
           :modules="modules"
           :defaultColDef="defaultColDef"
           :gridOptions="gridOptions"
