@@ -51,11 +51,8 @@ const form = reactive({
 });
 
 function submitForm() {
-  if (props.script) {
-    emit("updateScript", { ...props.script, ...form });
-  } else {
-    emit("addScript", form);
-  }
+  console.log("Submitting script form", form);
+  emit("addScript", form);
 }
 
 onMounted(() => {

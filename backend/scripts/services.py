@@ -5,124 +5,125 @@ from backend.auth.models import User
 from sqlalchemy.orm import Session
 
 
-async def create_new_tag(
+async def create_new_script(
     request, database: Session, current_user: User
-) -> models.Tag:
+) -> models.IdeaScript:
     try:
-        # error if the same tag has been added by the same user
-        existing_tag = (
-            database.query(models.Tag)
+        # check for script count
+        script_count = (
+            database.query(models.IdeaScript)
             .filter(
-                models.Tag.name == request.name,
-                models.Tag.user_id == current_user.id,
+                models.IdeaScript.idea_id == request.idea_id,
+                models.IdeaScript.user_id == current_user.id,
             )
-            .first()
+            .count()
         )
-        if existing_tag:
+        if script_count >= 3:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Tag already exists in your collection.",
+                detail="You cannot add more than 3 scripts for this idea.",
             )
 
-        new_tag = models.Tag(
-            name=request.name,
-            description=request.description,
+        new_script = models.IdeaScript(
+            idea_id=request.idea_id,
+            script_content=request.script_content,
             user_id=current_user.id,
         )
-        database.add(new_tag)
+        database.add(new_script)
         database.commit()
-        database.refresh(new_tag)
-        return new_tag
+        database.refresh(new_script)
+        return new_script
     except Exception as e:
-        print(f"Error creating tag: {str(e)}")
+        print(f"Error creating script: {str(e)}")
         database.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while creating the tag: {str(e)}",
+            detail=f"An error occurred while creating the script: {str(e)}",
         )
 
 
-async def get_tag_listing(database, current_user) -> List[models.Tag]:
+async def get_script_listing(database, current_user) -> List[models.IdeaScript]:
     try:
-        tags = (
-            database.query(models.Tag)
-            .filter(models.Tag.user_id == current_user)
+        scripts = (
+            database.query(models.IdeaScript)
+            .filter(models.IdeaScript.user_id == current_user)
             .all()
         )
-        return tags
+        return scripts
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while fetching tags: {str(e)}",
+            detail=f"An error occurred while fetching scripts: {str(e)}",
         )
 
 
-async def get_tag_by_id(tag_id, current_user, database):
+async def get_script_by_id(script_id, current_user, database):
     try:
-        tag = (
-            database.query(models.Tag)
-            .filter_by(id=tag_id, user_id=current_user)
+        script = (
+            database.query(models.IdeaScript)
+            .filter_by(id=script_id, user_id=current_user)
             .first()
         )
-        if not tag:
+        if not script:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Tag Not Found!"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Script Not Found!"
             )
-        return tag
+        return script
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while fetching the tag: {str(e)}",
+            detail=f"An error occurred while fetching the script: {str(e)}",
         )
-    
 
-async def update_tag_by_id(
-    tag_id, request, current_user: User, database: Session
-) -> models.Tag:
+
+async def update_script_by_id(
+    script_id, request, current_user: User, database: Session
+) -> models.IdeaScript:
     try:
-        # check if tag belongs to the user
-        tag = (
-            database.query(models.Tag)
-            .filter_by(id=tag_id, user_id=current_user.id)
+        # check if script belongs to the user
+        script = (
+            database.query(models.IdeaScript)
+            .filter_by(id=script_id, user_id=current_user.id)
             .first()
         )
-        if not tag:
+        if not script:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Tag Not Found!"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Script Not Found!"
             )
 
-        # update tag details
-        tag.name = request.name or tag.name
-        tag.description = request.description or tag.description
+        # update script details
+        script.script_content = request.script_content or script.script_content
 
         database.commit()
-        database.refresh(tag)
-        return tag
+        database.refresh(script)
+        return script
     except Exception as e:
         database.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while updating the tag: {str(e)}",
+            detail=f"An error occurred while updating the script: {str(e)}",
         )
 
 
-async def delete_tag_by_id(tag_id, current_user: User, database: Session):
+async def delete_script_by_id(script_id, current_user: User, database: Session):
     try:
-        # check if tag belongs to the user
-        tag = (
-            database.query(models.Tag)
-            .filter_by(id=tag_id, user_id=current_user.id)
+        # check if script belongs to the user
+        script = (
+            database.query(models.IdeaScript)
+            .filter_by(id=script_id, user_id=current_user.id)
             .first()
         )
-        if not tag:
+        if not script:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Tag Not Found!"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Script Not Found!"
             )
-        database.query(models.Tag).filter(models.Tag.id == tag_id).delete()
+        database.query(models.IdeaScript).filter(
+            models.IdeaScript.id == script_id
+        ).delete()
         database.commit()
     except Exception as e:
         database.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while deleting the tag: {str(e)}",
+            detail=f"An error occurred while deleting the script: {str(e)}",
         )

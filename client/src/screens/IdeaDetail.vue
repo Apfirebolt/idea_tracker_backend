@@ -14,7 +14,7 @@
           </button>
         </div>
       </div>
-      
+
       <div v-if="idea.tags && idea.tags.length">
         <h2 class="font-semibold mb-1">Tags:</h2>
         <div class="flex flex-wrap gap-2">
@@ -25,6 +25,25 @@
           >
             {{ tag.name }}
           </span>
+        </div>
+      </div>
+      <div v-if="idea.scripts && idea.scripts.length" class="mt-8">
+        <h2 class="font-semibold mb-4 text-lg">Scripts</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            v-for="script in idea.scripts"
+            :key="script.id"
+            class="bg-white rounded-lg shadow p-5 flex flex-col"
+          >
+            
+            <p class="text-gray-600 mb-4">{{ script.script_content }}</p>
+            <div class="mt-auto flex justify-end">
+              <span class="text-xs text-gray-400"
+                >Created:
+                {{ new Date(script.created_at).toLocaleDateString() }}</span
+              >
+            </div>
+          </div>
         </div>
       </div>
       <div class="mt-6">
@@ -86,7 +105,7 @@
                 >
                   Add Script Form
                 </DialogTitle>
-                <ScriptForm @close="closeScriptForm" @addTag="addScript" />
+                <ScriptForm @close="closeScriptForm" @addScript="addScript" />
               </DialogPanel>
             </TransitionChild>
           </div>
@@ -126,11 +145,13 @@ const closeScriptForm = () => {
   isScriptFormOpen.value = false;
 };
 
-const addScript = async (idea) => {
-  console.log("Adding idea:", idea);
-  closeIdeaForm();
-  await scriptStore.addScript(idea);
-  await ideaStore.getIdeasAction();
+const addScript = async (script) => {
+  console.log("Adding idea:", script);
+  closeScriptForm();
+  // add idea_id to the script
+  script.idea_id = idea.value.id;
+  await scriptStore.addScript(script);
+  await ideaStore.getIdeaAction(ideaId);
 };
 
 onMounted(async () => {
