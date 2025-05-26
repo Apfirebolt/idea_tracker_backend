@@ -15,6 +15,11 @@ const routes = [
         component: Dashboard
     },
     {
+        path: '/explore',
+        name: 'Explore',
+        component: () => import('../screens/Explore.vue')
+    },
+    {
         path: '/ideas/:ideaId',
         name: 'IdeaDetail',
         component: () => import('../screens/IdeaDetail.vue')

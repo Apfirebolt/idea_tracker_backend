@@ -60,10 +60,23 @@ async def create_new_idea(
 
 async def get_idea_listing(database, current_user) -> List[models.Idea]:
     try:
-        query = (
-            database.query(models.Idea)
-            .filter(models.Idea.user_id == current_user)
+        query = database.query(models.Idea).filter(models.Idea.user_id == current_user)
+        return query
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An error occurred while preparing the idea query: {str(e)}",
         )
+
+
+async def get_shared_idea_listing(database, current_user) -> List[models.Idea]:
+    try:
+        if not current_user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not authenticated.",
+            )
+        query = database.query(models.Idea).filter(models.Idea.is_shared == 1)
         return query
     except Exception as e:
         raise HTTPException(
@@ -84,16 +97,16 @@ async def get_idea_by_id(idea_id, current_user, database):
                 status_code=status.HTTP_404_NOT_FOUND, detail="Idea Not Found!"
             )
         return idea
-    
+
     except HTTPException as http_exc:
         raise http_exc
-    
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while fetching the idea: {str(e)}",
         )
-    
+
 
 async def update_idea_by_id(
     idea_id, request, current_user: User, database: Session
@@ -129,16 +142,16 @@ async def update_idea_by_id(
                     tag = models.Tag(name=tag_name, user_id=current_user.id)
                     database.add(tag)
                     database.flush()
-                
+
                 idea.tags.append(tag)
 
         database.commit()
         database.refresh(idea)
         return idea
-    
+
     except HTTPException as http_exc:
         raise http_exc
-    
+
     except Exception as e:
         database.rollback()
         raise HTTPException(
@@ -164,7 +177,7 @@ async def delete_idea_by_id(idea_id, current_user: User, database: Session):
 
     except HTTPException as http_exc:
         raise http_exc
-    
+
     except Exception as e:
         database.rollback()
         raise HTTPException(

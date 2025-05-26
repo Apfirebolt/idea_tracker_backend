@@ -11,6 +11,7 @@ export const useIdeaStore = defineStore("idea", {
   state: () => ({
     idea: ref({}),
     ideas: ref([]),
+    sharedIdeas: ref([]),
     loading: ref(false),
   }),
 
@@ -20,6 +21,9 @@ export const useIdeaStore = defineStore("idea", {
     },
     getIdeas() {
       return this.ideas;
+    },
+    getSharedIdeas() {
+      return this.sharedIdeas;
     },
     getCompletedIdeasCount() {
       return this.ideas && this.ideas.items && this.ideas.items.filter(idea => idea.status === 'completed').length;
@@ -95,6 +99,22 @@ export const useIdeaStore = defineStore("idea", {
           headers,
         });
         this.ideas = response.data;
+      } catch (error) {
+        console.log(error);
+        return error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async getSharedIdeasAction(page = 1) {
+      try {
+        const headers = this.getAuthHeaders();
+        this.loading = true;
+        const response = await httpClient.get("ideas/shared?page=" + page, {
+          headers,
+        });
+        this.sharedIdeas = response.data;
       } catch (error) {
         console.log(error);
         return error;

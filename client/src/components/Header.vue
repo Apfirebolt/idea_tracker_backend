@@ -81,7 +81,8 @@ const links = [
 
 const authLinks = [
   { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Profile', href: '/profile' }
+  { name: 'Profile', href: '/profile' },
+  { name: 'Explore', href: '/explore' }
 ];
 
 const checkScroll = () => {

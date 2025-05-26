@@ -37,6 +37,15 @@ async def idea_list(
     return sqlalchemy_paginate(database,idea_query)
 
 
+@router.get("/shared", status_code=status.HTTP_200_OK, response_model=Page[schema.IdeaList])
+async def shared_idea_list(
+    database: Session = Depends(db.get_db),
+    current_user: User = Depends(get_current_user),
+):
+    shared_ideas_query = await services.get_shared_idea_listing(database, current_user)
+    return sqlalchemy_paginate(database, shared_ideas_query)
+
+
 @router.get(
     "/{idea_id}", status_code=status.HTTP_200_OK, response_model=schema.IdeaList
 )

@@ -1,7 +1,7 @@
 <template>
   <form
     @submit.prevent="submitForm"
-    class="max-w-md mx-auto p-6 bg-white rounded shadow"
+    class="max-w-xl mx-auto p-6 bg-white rounded shadow"
   >
     <div class="mb-4">
       <label for="title" class="block text-gray-700 font-bold mb-2"
@@ -88,6 +88,18 @@
           {{ option.label }}
         </option>
       </select>
+    </div>
+
+    <div class="mb-4 flex items-center">
+      <input
+        id="shared"
+        type="checkbox"
+        v-model="form.is_shared"
+        class="mr-2"
+      />
+      <label for="shared" class="text-gray-700 font-bold select-none">
+        Shared
+      </label>
     </div>
     <button
       type="submit"
@@ -183,6 +195,7 @@ onMounted(() => {
   if (props.idea) {
     form.title = props.idea.title;
     form.description = props.idea.description;
+    form.is_shared = props.idea.is_shared || false;
     // populate tags with tag name if tags are present in the idea
     form.tags = props.idea.tags ? props.idea.tags.map((tag) => tag.name) : [];
   }

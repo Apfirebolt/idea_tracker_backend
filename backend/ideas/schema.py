@@ -30,6 +30,7 @@ class IdeaList(BaseModel):
     title: str
     description: Optional[str]
     status: Optional[str] = None
+    is_shared: Optional[int]
     created_at: datetime
     updated_at: datetime
 
