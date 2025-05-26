@@ -167,6 +167,24 @@ export const useIdeaStore = defineStore("idea", {
       }
     },
 
+    async addComment(payload) {
+      try {
+        const headers = this.getAuthHeaders();
+        this.loading = true;
+        const response = await httpClient.post(`ideas/${payload.idea_id}/comments`, payload, {
+          headers,
+        });
+        if (response.status === 201) {
+          toast.success("Comment added successfully!");
+        }
+      } catch (error) {
+        console.log(error);
+        return error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
     resetIdeaData() {
       this.idea = {};
       this.ideas = [];

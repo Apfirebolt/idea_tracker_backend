@@ -174,8 +174,8 @@ function submitForm() {
   // Handle form submission logic here
   if (props.idea) {
     // merge status and tags with the existing idea
-    form.status = selectedStatus.value; // Add status to the form
-    form.is_shared = form.is_shared || false; // Ensure is_shared is set
+    form.status = selectedStatus.value;
+    form.is_shared = form.is_shared || false;
     emit("updateIdea", { ...props.idea, ...form });
   } else {
     emit("addIdea", form);
@@ -198,7 +198,7 @@ onMounted(() => {
   if (props.idea) {
     form.title = props.idea.title;
     form.description = props.idea.description;
-    form.is_shared = props.idea.is_shared || false;
+    form.is_shared = props.idea.is_shared === 1 ? true : false;
     // populate tags with tag name if tags are present in the idea
     form.tags = props.idea.tags ? props.idea.tags.map((tag) => tag.name) : [];
   }

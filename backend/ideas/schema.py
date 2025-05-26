@@ -26,6 +26,12 @@ class IdeaUpdate(BaseModel):
     is_shared: Optional[int] = 0
 
 
+class IdeaCommentSchema(BaseModel):
+    id: int
+    content: str
+    created_at: datetime
+
+
 class IdeaList(BaseModel):
     id: Optional[int]
     title: str
@@ -37,11 +43,17 @@ class IdeaList(BaseModel):
 
     tags: Optional[list[TagBase]] = None
     scripts: Optional[list[ScriptBase]] = None
+    comments: Optional[list[IdeaCommentSchema]] = None
 
 
 class UserSchema(BaseModel):
     username: str
     email: EmailStr
+
+
+class AddIdeaComment(BaseModel):
+    content: str
+    idea_id: int
 
 
 class IdeaItemSchema(BaseModel):

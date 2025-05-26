@@ -89,3 +89,15 @@ async def add_tags_to_idea(
     current_user: User = Depends(get_current_user),
 ):
     return await services.add_tags_to_idea(idea_id, request.tags, current_user, database)
+
+
+@router.post(
+    "/{idea_id}/comments", status_code=status.HTTP_200_OK, response_model=schema.IdeaCommentSchema
+)
+async def add_comments_to_idea(
+    idea_id: int,
+    request: schema.AddIdeaComment,
+    database: Session = Depends(db.get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return await services.add_comments_to_idea(idea_id, request, current_user, database)

@@ -75,6 +75,55 @@
           </div>
         </div>
       </div>
+      <!-- Comment box if the idea is shared -->
+      <div
+        v-if="idea.is_shared === 1"
+        class="mt-8 bg-white p-4 rounded-lg shadow-md"
+      >
+        <h2 class="text-xl font-semibold mb-4 text-center text-primary">
+          Comments
+        </h2>
+        <p class="text-gray-600 text-center">
+          This idea is shared. You can add comments here.
+        </p>
+        <!-- Comment form or component can be added here -->
+        <div class="mt-4">
+          <div class="relative">
+            <textarea
+              v-model="commentText"
+              placeholder="Add a comment..."
+              class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300 pl-10"
+              rows="3"
+            ></textarea>
+            <PencilIcon class="w-5 h-5 text-gray-400 absolute left-3 top-3 pointer-events-none" />
+          </div>
+            <button
+            @click="addComment"
+            class="mt-2 bg-primary text-white px-4 py-2 rounded-md shadow hover:bg-blue-600 transition duration-200 flex items-center"
+            >
+            <PlusIcon class="w-5 h-5 mr-2" />
+            Add Comment
+            </button>
+        </div>
+      </div>
+      <!-- Show all comments -->
+      <div v-if="idea.comments && idea.comments.length > 0" class="mt-6">
+        <h2 class="text-xl font-semibold mb-4 text-center text-primary">
+          All Comments
+        </h2>
+        <ul class="space-y-4">
+          <li
+            v-for="comment in idea.comments"
+            :key="comment.id"
+            class="bg-white p-4 rounded-lg shadow-md"
+          >
+            <p class="text-gray-800">{{ comment.content }}</p>
+            <p class="text-gray-500 text-sm mt-1">
+              {{ new Date(comment.created_at).toLocaleString() }}
+            </p>
+          </li>
+        </ul>
+      </div>
       <div class="mt-6">
         <router-link
           to="-1"
@@ -170,6 +219,7 @@ const ideaStore = useIdeaStore();
 const scriptStore = useScriptStore();
 const selectedScript = ref(null);
 const isScriptFormOpen = ref(false);
+const commentText = ref("");
 const idea = computed(() => ideaStore.getIdea);
 const loading = computed(() => ideaStore.loading);
 
@@ -204,6 +254,20 @@ const openEditScriptForm = (script) => {
 const updateScript = async (script) => {
   await scriptStore.updateScript(script);
   await ideaStore.getIdeaAction(idea.value.id);
+};
+
+const addComment = async () => {
+  if (!commentText.value.trim()) {
+    return;
+  }
+  
+  const payload = {
+    idea_id: idea.value.id,
+    content: commentText.value,
+  };
+  await ideaStore.addComment(payload);
+  await ideaStore.getIdeaAction(idea.value.id);
+  commentText.value = "";
 };
 
 onMounted(async () => {

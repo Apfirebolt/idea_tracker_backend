@@ -129,7 +129,6 @@ async def update_idea_by_id(
         idea.status = request.status or idea.status
         # if is_shared is provided and true then set is_shared to 1
         if hasattr(request, "is_shared"):
-            print('IS shared is', request.is_shared)
             if request.is_shared:
                 idea.is_shared = 1
             else:
@@ -190,4 +189,46 @@ async def delete_idea_by_id(idea_id, current_user: User, database: Session):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while deleting the idea: {str(e)}",
+        )
+    
+
+async def add_comments_to_idea(
+    idea_id: int, request, current_user: User, database: Session
+) -> models.IdeaComment:
+    try:
+        # check if idea belongs to the user
+        idea = (
+            database.query(models.Idea)
+            .filter_by(id=idea_id)
+            .first()
+        )
+        if not idea:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Idea Not Found!"
+            )
+        
+        # if idea is not shared then comments are not allowed
+        if idea.is_shared == 0:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Comments are not allowed on private ideas.",
+            )
+
+        # Create a new comment
+        new_comment = models.IdeaComment(
+            content=request.content,
+            idea_id=request.idea_id,
+            user_id=current_user.id,
+        )
+
+        database.add(new_comment)
+        database.commit()
+        database.refresh(new_comment)
+        return new_comment
+
+    except Exception as e:
+        database.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An error occurred while adding the comment: {str(e)}",
         )

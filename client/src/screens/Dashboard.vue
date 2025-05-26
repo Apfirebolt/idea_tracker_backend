@@ -301,6 +301,7 @@ const gridOptions = ref({
 });
 
 const openIdeaForm = () => {
+  selectedIdea.value = null;
   isIdeaFormOpen.value = true;
 };
 const closeIdeaForm = () => {
@@ -308,6 +309,7 @@ const closeIdeaForm = () => {
 };
 
 const openTagForm = () => {
+  selectedTag.value = null;
   isTagFormOpen.value = true;
 };
 const closeTagForm = () => {
