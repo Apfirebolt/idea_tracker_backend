@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen mt-16 bg-gray-100 p-8">
     <div class="max-w-7xl mx-auto">
-      <div class="flex justify-between items-center">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Dashboard</h1>
+      <div class="flex justify-between items-center bg-white px-4 py-6 rounded-lg shadow-lg mb-6">
+        <h1 class="text-3xl font-bold text-primary">Dashboard</h1>
         <div class="flex space-x-2">
           <button
             @click="openIdeaForm"

@@ -1,7 +1,11 @@
 <template>
   <div class="min-h-screen mt-16 bg-gray-100 p-8">
+    <Loader v-if="loading" />
     <div class="max-w-7xl mx-auto">
-      <div v-if="idea" class="flex justify-between items-center bg-white px-4 py-3">
+      <div
+        v-if="idea"
+        class="flex justify-between items-center bg-white px-4 py-3"
+      >
         <h1 class="text-3xl font-bold text-primary">{{ idea.title }}</h1>
 
         <div class="flex space-x-2">
@@ -16,7 +20,11 @@
       </div>
 
       <div v-if="idea.tags && idea.tags.length" class="mt-4">
-        <h2 class="font-semibold mb-4 text-2xl text-center text-primary bg-white p-2">Tags:</h2>
+        <h2
+          class="font-semibold mb-4 text-2xl text-center text-primary bg-white p-2"
+        >
+          Tags:
+        </h2>
         <div class="flex flex-wrap justify-center gap-2">
           <span
             v-for="tag in idea.tags"
@@ -27,8 +35,19 @@
           </span>
         </div>
       </div>
-      <div v-if="idea.scripts && idea.scripts.length" class="mt-4">
-        <h2 class="font-semibold mb-4 text-2xl text-center text-primary bg-white p-2">Scripts</h2>
+      <div
+        v-if="idea.scripts && idea.scripts.length === 0"
+        class="mt-8 text-center text-gray-500 text-lg"
+      >
+        No scripts have been added yet.
+      </div>
+
+      <div v-if="idea.scripts && idea.scripts.length > 0" class="mt-4">
+        <h2
+          class="font-semibold mb-4 text-2xl text-center text-primary bg-white p-2"
+        >
+          Scripts
+        </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
             v-for="script in idea.scripts"
@@ -40,14 +59,16 @@
             <div class="flex space-x-2 mt-4">
               <button
                 @click="openEditScriptForm(script)"
-                class="bg-info text-dark px-3 py-1 rounded hover:bg-blue-800 hover:text-light transition text-sm"
+                class="bg-info text-dark px-3 py-1 rounded hover:bg-blue-800 hover:text-light transition text-sm flex items-center"
               >
+                <PencilIcon class="w-4 h-4 mr-1" />
                 Edit
               </button>
               <button
                 @click="deleteScript(script.id)"
-                class="bg-danger text-white px-3 py-1 rounded hover:bg-red-600 transition text-sm"
+                class="bg-danger text-white px-3 py-1 rounded hover:bg-red-600 transition text-sm flex items-center"
               >
+                <TrashIcon class="w-4 h-4 mr-1" />
                 Delete
               </button>
             </div>
@@ -113,7 +134,12 @@
                 >
                   Add Script Form
                 </DialogTitle>
-                <ScriptForm @close="closeScriptForm" @addScript="addScript" :script="selectedScript" @updateScript="updateScript" />
+                <ScriptForm
+                  @close="closeScriptForm"
+                  @addScript="addScript"
+                  :script="selectedScript"
+                  @updateScript="updateScript"
+                />
               </DialogPanel>
             </TransitionChild>
           </div>
@@ -129,7 +155,6 @@ import { useIdeaStore } from "../store/idea";
 import { useScriptStore } from "../store/script";
 import { onMounted, ref, computed } from "vue";
 import ScriptForm from "../components/ScriptForm.vue";
-import { PlusIcon } from "@heroicons/vue/solid";
 import {
   TransitionRoot,
   TransitionChild,
@@ -137,6 +162,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/vue";
+import { PlusIcon, TrashIcon, PencilIcon } from "@heroicons/vue/solid";
 import Loader from "../components/Loader.vue";
 
 const route = useRoute();
