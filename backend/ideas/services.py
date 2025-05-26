@@ -127,6 +127,13 @@ async def update_idea_by_id(
         idea.title = request.title or idea.title
         idea.description = request.description or idea.description
         idea.status = request.status or idea.status
+        # if is_shared is provided and true then set is_shared to 1
+        if hasattr(request, "is_shared"):
+            print('IS shared is', request.is_shared)
+            if request.is_shared:
+                idea.is_shared = 1
+            else:
+                idea.is_shared = 0
 
         # update tags if provided
         if hasattr(request, "tags") and isinstance(request.tags, list):

@@ -71,36 +71,38 @@
       </select>
     </div>
 
-    <div v-if="props.idea" class="mb-4">
-      <label for="status" class="block text-gray-700 font-bold mb-2"
-        >Status</label
-      >
-      <select
-        id="status"
-        v-model="selectedStatus"
-        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
-      >
-        <option
-          v-for="option in statusOptions"
-          :key="option.value"
-          :value="option.value"
+    <div v-if="props.idea" class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label for="status" class="block text-gray-700 font-bold mb-2"
+          >Status</label
         >
-          {{ option.label }}
-        </option>
-      </select>
+        <select
+          id="status"
+          v-model="selectedStatus"
+          class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+        >
+          <option
+            v-for="option in statusOptions"
+            :key="option.value"
+            :value="option.value"
+          >
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+      <div class="flex items-center">
+        <input
+          id="shared"
+          type="checkbox"
+          v-model="form.is_shared"
+          class="mr-2"
+        />
+        <label for="shared" class="text-gray-700 font-bold select-none">
+          Shared
+        </label>
+      </div>
     </div>
 
-    <div class="mb-4 flex items-center">
-      <input
-        id="shared"
-        type="checkbox"
-        v-model="form.is_shared"
-        class="mr-2"
-      />
-      <label for="shared" class="text-gray-700 font-bold select-none">
-        Shared
-      </label>
-    </div>
     <button
       type="submit"
       :disabled="isIdeaFormDisabled"
@@ -173,6 +175,7 @@ function submitForm() {
   if (props.idea) {
     // merge status and tags with the existing idea
     form.status = selectedStatus.value; // Add status to the form
+    form.is_shared = form.is_shared || false; // Ensure is_shared is set
     emit("updateIdea", { ...props.idea, ...form });
   } else {
     emit("addIdea", form);

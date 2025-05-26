@@ -23,6 +23,7 @@ class IdeaUpdate(BaseModel):
     description: Optional[str] = None
     tags: Optional[list[str]] = None
     status: Optional[str] = None
+    is_shared: Optional[int] = 0
 
 
 class IdeaList(BaseModel):

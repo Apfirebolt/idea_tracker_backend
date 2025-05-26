@@ -116,6 +116,14 @@ export const useIdeaStore = defineStore("idea", {
         });
         this.sharedIdeas = response.data;
       } catch (error) {
+        if (error.status === 401) {
+          toast.error("Unauthorized access. Please log in.", {
+              rtl: true,
+              limit: 3,
+              position: toast.POSITION.BOTTOM_CENTER,
+            },);
+          this.redirectToLogin();
+        }
         console.log(error);
         return error;
       } finally {
