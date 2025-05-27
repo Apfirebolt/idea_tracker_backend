@@ -95,17 +95,20 @@
               class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300 pl-10"
               rows="3"
             ></textarea>
-            <PencilIcon class="w-5 h-5 text-gray-400 absolute left-3 top-3 pointer-events-none" />
+            <PencilIcon
+              class="w-5 h-5 text-gray-400 absolute left-3 top-3 pointer-events-none"
+            />
           </div>
-            <button
+          <button
             @click="addComment"
             class="mt-2 bg-primary text-white px-4 py-2 rounded-md shadow hover:bg-blue-600 transition duration-200 flex items-center"
-            >
+          >
             <PlusIcon class="w-5 h-5 mr-2" />
             Add Comment
-            </button>
+          </button>
         </div>
       </div>
+      {{ user }}
       <!-- Show all comments -->
       <div v-if="idea.comments && idea.comments.length > 0" class="mt-6">
         <h2 class="text-xl font-semibold mb-4 text-center text-primary">
@@ -121,6 +124,29 @@
             <p class="text-gray-500 text-sm mt-1">
               {{ new Date(comment.created_at).toLocaleString() }}
             </p>
+            <div
+              v-if="user && user.user.id === comment.user_id"
+              class="flex space-x-2 mt-2"
+            >
+              <button
+                @click="
+                  ideaStore
+                    .deleteComment(comment.id)
+                    .then(() => ideaStore.getIdeaAction(idea.value.id))
+                "
+                class="bg-danger text-white px-3 py-1 rounded hover:bg-red-600 transition text-sm flex items-center"
+              >
+                <TrashIcon class="w-4 h-4 mr-1" />
+                Delete
+              </button>
+              <button
+                @click="ideaStore.startEditComment(comment)"
+                class="bg-info text-dark px-3 py-1 rounded hover:bg-blue-800 hover:text-light transition text-sm flex items-center"
+              >
+                <PencilIcon class="w-4 h-4 mr-1" />
+                Edit
+              </button>
+            </div>
           </li>
         </ul>
       </div>
@@ -201,6 +227,7 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { useIdeaStore } from "../store/idea";
+import { useAuth } from "../store/auth";
 import { useScriptStore } from "../store/script";
 import { onMounted, ref, computed } from "vue";
 import ScriptForm from "../components/ScriptForm.vue";
@@ -217,11 +244,13 @@ import Loader from "../components/Loader.vue";
 const route = useRoute();
 const ideaStore = useIdeaStore();
 const scriptStore = useScriptStore();
+const authStore = useAuth();
 const selectedScript = ref(null);
 const isScriptFormOpen = ref(false);
 const commentText = ref("");
 const idea = computed(() => ideaStore.getIdea);
 const loading = computed(() => ideaStore.loading);
+const user = computed(() => authStore.getAuthData);
 
 const openScriptForm = () => {
   isScriptFormOpen.value = true;
@@ -260,7 +289,7 @@ const addComment = async () => {
   if (!commentText.value.trim()) {
     return;
   }
-  
+
   const payload = {
     idea_id: idea.value.id,
     content: commentText.value,

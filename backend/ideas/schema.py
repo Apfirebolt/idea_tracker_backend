@@ -31,6 +31,17 @@ class IdeaCommentSchema(BaseModel):
     content: str
     created_at: datetime
 
+class IdeaComment(BaseModel):
+    id: int
+    content: str
+    idea_id: int
+    user_id: Optional[int] = None
+    created_at: datetime
+    username: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
 
 class IdeaList(BaseModel):
     id: Optional[int]
@@ -43,7 +54,10 @@ class IdeaList(BaseModel):
 
     tags: Optional[list[TagBase]] = None
     scripts: Optional[list[ScriptBase]] = None
-    comments: Optional[list[IdeaCommentSchema]] = None
+    comments: Optional[list[IdeaComment]] = None
+
+    class Config:
+        from_attributes = True
 
 
 class UserSchema(BaseModel):

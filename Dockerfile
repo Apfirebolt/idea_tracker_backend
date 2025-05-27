@@ -12,8 +12,8 @@ COPY ./alembic /app/alembic
 COPY ./entrypoint.sh .
 RUN chmod +x /app/entrypoint.sh
 
-# Copy only the necessary artifacts from the builder stage AFTER installing dependencies
-COPY --from=builder /app .
+# Copy all your application code from the build context
+COPY . .
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1

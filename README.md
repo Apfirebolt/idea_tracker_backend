@@ -57,3 +57,5 @@ This would remove all the migration files inside the Alembic folder. Then, you c
 ```
  alembic revision --autogenerate -m "initial migrations added"
 ```
+
+

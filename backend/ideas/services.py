@@ -2,7 +2,8 @@ from fastapi import HTTPException, status
 from typing import List
 from . import models
 from backend.auth.models import User
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+
 
 
 async def create_new_idea(
@@ -89,6 +90,12 @@ async def get_idea_by_id(idea_id, current_user, database):
     try:
         idea = (
             database.query(models.Idea)
+            .options(
+                joinedload(models.Idea.comments).joinedload(models.IdeaComment.user), # <-- Eager load comments and their users
+                # Also eager load other relationships you might need in IdeaList
+                joinedload(models.Idea.tags),
+                joinedload(models.Idea.scripts)
+            )
             .filter_by(id=idea_id, user_id=current_user)
             .first()
         )

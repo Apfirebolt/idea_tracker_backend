@@ -54,6 +54,7 @@ class IdeaComment(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     idea = relationship("Idea", back_populates="comments")
+    user = relationship("User")
 
 
 class IdeaScript(Base):
