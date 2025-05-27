@@ -92,7 +92,6 @@ async def get_idea_by_id(idea_id, current_user, database):
             database.query(models.Idea)
             .options(
                 joinedload(models.Idea.comments).joinedload(models.IdeaComment.user), # <-- Eager load comments and their users
-                # Also eager load other relationships you might need in IdeaList
                 joinedload(models.Idea.tags),
                 joinedload(models.Idea.scripts)
             )

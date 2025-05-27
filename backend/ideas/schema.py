@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from backend.tags.schema import TagList, TagBase
 from backend.scripts.schema import ScriptBase
+from backend.auth.schema import DisplayAccount
 
 
 class IdeaBase(BaseModel):
@@ -37,7 +38,7 @@ class IdeaComment(BaseModel):
     idea_id: int
     user_id: Optional[int] = None
     created_at: datetime
-    username: Optional[str] = None
+    user: Optional[DisplayAccount] = None
 
     class Config:
         from_attributes = True

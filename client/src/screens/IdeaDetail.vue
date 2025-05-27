@@ -108,7 +108,7 @@
           </button>
         </div>
       </div>
-      {{ user }}
+
       <!-- Show all comments -->
       <div v-if="idea.comments && idea.comments.length > 0" class="mt-6">
         <h2 class="text-xl font-semibold mb-4 text-center text-primary">
@@ -118,35 +118,42 @@
           <li
             v-for="comment in idea.comments"
             :key="comment.id"
-            class="bg-white p-4 rounded-lg shadow-md"
+            class="bg-white p-4 flex justify-between rounded-lg shadow-md"
           >
-            <p class="text-gray-800">{{ comment.content }}</p>
-            <p class="text-gray-500 text-sm mt-1">
-              {{ new Date(comment.created_at).toLocaleString() }}
-            </p>
-            <div
-              v-if="user && user.user.id === comment.user_id"
-              class="flex space-x-2 mt-2"
-            >
-              <button
-                @click="
-                  ideaStore
-                    .deleteComment(comment.id)
-                    .then(() => ideaStore.getIdeaAction(idea.value.id))
-                "
-                class="bg-danger text-white px-3 py-1 rounded hover:bg-red-600 transition text-sm flex items-center"
+            <div>
+              <p class="text-gray-800">{{ comment.content }}</p>
+              <p class="text-gray-500 text-sm mt-1">
+                {{ new Date(comment.created_at).toLocaleString() }}
+              </p>
+              <div
+                v-if="user && user.user.id === comment.user.id"
+                class="flex space-x-2 mt-2"
               >
-                <TrashIcon class="w-4 h-4 mr-1" />
-                Delete
-              </button>
-              <button
-                @click="ideaStore.startEditComment(comment)"
-                class="bg-info text-dark px-3 py-1 rounded hover:bg-blue-800 hover:text-light transition text-sm flex items-center"
-              >
-                <PencilIcon class="w-4 h-4 mr-1" />
-                Edit
-              </button>
+                <button
+                  @click="
+                    ideaStore
+                      .deleteComment(comment.id)
+                      .then(() => ideaStore.getIdeaAction(idea.value.id))
+                  "
+                  class="bg-danger text-white px-3 py-1 rounded hover:bg-red-600 transition text-sm flex items-center"
+                >
+                  <TrashIcon class="w-4 h-4 mr-1" />
+                  Delete
+                </button>
+                <button
+                  @click="ideaStore.startEditComment(comment)"
+                  class="bg-info text-dark px-3 py-1 rounded hover:bg-blue-800 hover:text-light transition text-sm flex items-center"
+                >
+                  <PencilIcon class="w-4 h-4 mr-1" />
+                  Edit
+                </button>
+              </div>
             </div>
+            <div>
+                <p class="text-gray-500 text-sm mt-1">
+                  Commented by: {{ comment.user.username }}
+                </p>
+              </div>
           </li>
         </ul>
       </div>
