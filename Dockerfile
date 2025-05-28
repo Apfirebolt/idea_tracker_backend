@@ -1,23 +1,34 @@
 # Final Stage (Smaller Runtime Image)
-FROM python:3.12-slim
+FROM python:3.12-bookworm
 
 WORKDIR /app
 
-# Install alembic BEFORE switching to the non-root user
-RUN pip install --no-cache-dir alembic
+# Create a non-root user and group
+RUN adduser --system --group appuser
 
-# Copy Alembic configuration and scripts
-COPY ./alembic.ini .
-COPY ./alembic /app/alembic
-COPY ./entrypoint.sh .
-RUN chmod +x /app/entrypoint.sh
+# Change ownership of the WORKDIR to the new user *while still root*
+RUN chown appuser:appuser /app
 
-# Copy all your application code from the build context
-COPY . .
+# Switch to the non-root user
+USER appuser
 
-# Set environment variables
+# Create a temporary directory that the appuser can write to.
+# This is crucial for pip's operations.
+RUN mkdir -p /app/tmp && chmod 777 /app/tmp
+
+# Set environment variables, including TMPDIR for pip's temporary files.
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV TMPDIR /app/tmp
+
+# Install alembic
+RUN pip install --no-cache-dir alembic
+
+# Copy all your application code from the build context.
+COPY --chown=appuser:appuser . .
+
+# Ensure the entrypoint script is executable AFTER all files have been copied.
+RUN chmod +x /app/entrypoint.sh
 
 # Expose the application port (if applicable)
 EXPOSE 8000
