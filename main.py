@@ -7,6 +7,8 @@ from logging_config import LOGGING_CONFIG
 import logging
 from logging.config import dictConfig
 
+from backend.middleware import TimingMiddleware # Import your middleware
+
 from backend.auth import router as auth_router
 from backend.ideas import router as ideas_router
 from backend.users import router as users_router
@@ -23,6 +25,9 @@ logger = logging.getLogger("my_fastapi_app")
 
 # Add pagination
 add_pagination(app)
+
+# Add the timing middleware
+app.add_middleware(TimingMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
