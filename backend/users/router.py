@@ -1,6 +1,9 @@
 from typing import List
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate as sqlalchemy_paginate
+
 from backend.auth.jwt import get_current_user
 from backend.auth.models import User
 
@@ -13,13 +16,13 @@ from . import services
 router = APIRouter(tags=["Users"], prefix="/api/users")
 
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=List[DisplayAccount])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=Page[DisplayAccount])
 async def user_list(
     database: Session = Depends(db.get_db),
     current_user: User = Depends(get_current_user),
 ):
-    result = await services.get_user_listing(database, current_user.id)
-    return result
+    query = await services.get_user_listing(database, current_user.id)
+    return sqlalchemy_paginate(database, query)
 
 
 @router.get(

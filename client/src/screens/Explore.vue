@@ -50,10 +50,7 @@
           v-for="user in users.items"
           :key="user.id"
           class="bg-white rounded-lg shadow-lg p-5 flex flex-col cursor-pointer hover:shadow-xl transition-shadow duration-200"
-          @click="
-            () =>
-              router.push({ name: 'UserProfile', params: { userId: user.id } })
-          "
+          @click="goToUserProfile(user.id)"
         >
           <h3 class="text-xl font-semibold mb-2">{{ user.name }}</h3>
           <p class="text-gray-600 mb-4">{{ user.email }}</p>
@@ -78,6 +75,10 @@ const users = computed(() => userStore.getUsers);
 
 const goToIdeaDetail = (ideaId) => {
   router.push({ name: "IdeaDetail", params: { ideaId } });
+};
+
+const goToUserProfile = (userId) => {
+  router.push({ name: "UserDetail", params: { userId } });
 };
 
 onMounted(async () => {

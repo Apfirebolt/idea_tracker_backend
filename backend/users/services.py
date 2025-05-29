@@ -5,11 +5,7 @@ from backend.auth.models import User
 
 async def get_user_listing(database, current_user) -> List[User]:
     try:
-        users = (
-            database.query(User)
-            .all()
-        )
-        return users
+        return database.query(User)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
