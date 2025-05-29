@@ -1,70 +1,43 @@
-# my_fastapi_app/logging_config.py
-import sys
+# logger_config.py
+import logging
+from logging.handlers import RotatingFileHandler
+import os
 
-LOGGING_CONFIG = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "default": {
-            "()": "uvicorn.logging.DefaultFormatter",
-            "fmt": "%(levelprefix)s %(asctime)s - %(name)s - %(message)s",
-            "datefmt": "%Y-%m-%d %H:%M:%S",
-            "use_colors": True,
-        },
-        "file": {
-            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            "datefmt": "%Y-%m-%d %H:%M:%S",
-        },
-    },
-    "handlers": {
-        "console": {
-            "formatter": "default",
-            "class": "logging.StreamHandler",
-            "stream": sys.stdout,
-        },
-        "file_app": {
-            "formatter": "file",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": "app.log",
-            "maxBytes": 10485760, # 10 MB
-            "backupCount": 5,
-            "level": "INFO",
-        },
-    },
-    "loggers": {
-        "my_fastapi_app": { # Top-level logger for your application
-            "handlers": ["console", "file_app"],
-            "level": "INFO",
-            "propagate": False,
-        },
-        "my_fastapi_app.routers": { # Logger for router modules
-            "handlers": ["console", "file_app"],
-            "level": "DEBUG", # Maybe more verbose for debugging specific routes
-            "propagate": False,
-        },
-        "my_fastapi_app.services": { # Logger for service modules
-            "handlers": ["console", "file_app"],
-            "level": "INFO",
-            "propagate": False,
-        },
-        "uvicorn": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
-        },
-        "uvicorn.error": {
-            "level": "INFO",
-            "handlers": ["console"],
-            "propagate": False,
-        },
-        "uvicorn.access": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
-        },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "WARNING", # Root logger as a fallback for unconfigured loggers
-    },
-}
+# Create a logs directory if it doesn't exist
+log_dir = "logs"
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+
+log_file = os.path.join(log_dir, "app_errors.log")
+
+# Configure the logger
+def setup_logging():
+    logger = logging.getLogger("idea_app")
+    logger.setLevel(logging.INFO) # Only log ERROR level and above
+
+    file_handler = RotatingFileHandler(
+        log_file,
+        maxBytes=1024 * 1024 * 5,  # 5 MB
+        backupCount=5,  # Keep up to 5 old log files
+        encoding="utf-8"
+    )
+
+    # Define the log format to include object ID, error message, timestamp, level, etc.
+    # We'll use %(extra)s to inject the object_id
+    formatter = logging.Formatter(
+        "%(asctime)s - %(levelname)s - %(name)s - %(filename)s:%(lineno)d - (Object ID: %(object_id)s) - %(message)s"
+    )
+    file_handler.setFormatter(formatter)
+
+    # Add the handler to the logger
+    logger.addHandler(file_handler)
+
+    # Optionally, also log to console for development
+    console_handler = logging.StreamHandler()
+    console_formatter = logging.Formatter(
+        "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+    )
+    console_handler.setFormatter(console_formatter)
+    logger.addHandler(console_handler)
+
+    return logger

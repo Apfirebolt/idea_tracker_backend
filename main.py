@@ -3,9 +3,8 @@ from fastapi_pagination import add_pagination
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 import uvicorn
-from logging_config import LOGGING_CONFIG
+from logging_config import setup_logging  # Import your logging setup function
 import logging
-from logging.config import dictConfig
 
 from backend.middleware import TimingMiddleware # Import your middleware
 
@@ -15,13 +14,17 @@ from backend.users import router as users_router
 from backend.tags import router as tags_router
 from backend.scripts import router as scripts_router
 
+# 1. Call setup_logging() once at the application's entry point
+setup_logging()
+
+# 2. Get the *configured* logger instance by its name
+logger = logging.getLogger("idea_app")
+
 app = FastAPI(title="Fast API Ticket Master App",
     docs_url="/docs",
     version="0.0.1")
 
 origins = ["http://localhost:8080", "http://localhost:3000",]
-
-logger = logging.getLogger("my_fastapi_app")
 
 # Add pagination
 add_pagination(app)
