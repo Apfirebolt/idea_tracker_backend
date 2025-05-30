@@ -69,3 +69,16 @@ class IdeaScript(Base):
 
     idea = relationship("Idea", back_populates="scripts")
 
+
+class IdeaImage(Base):
+    __tablename__ = "idea_images"
+
+    id = Column(Integer, primary_key=True, index=True)
+    idea_id = Column(Integer, ForeignKey("ideas.id", ondelete="CASCADE"), nullable=False)
+    cloudinary_url = Column(String(255), nullable=False)
+    image_name = Column(String(255), nullable=False)
+    image_type = Column(String(50), nullable=False)  # e.g., 'thumbnail', 'full', etc.
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+

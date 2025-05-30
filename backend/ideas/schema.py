@@ -86,3 +86,13 @@ class PaginatedIdeaList(BaseModel):
     page: int
     size: int
     pages: int
+
+
+class IdeaImageSchema(BaseModel):
+    id: int
+    idea_id: int
+    image_url: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

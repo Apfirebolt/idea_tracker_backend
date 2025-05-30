@@ -1,11 +1,12 @@
 from typing import List
-from fastapi import APIRouter, Depends, status, Response
+from fastapi import APIRouter, Depends, status, Response, File, UploadFile
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate as sqlalchemy_paginate
 
 from sqlalchemy.orm import Session
 from backend.auth.jwt import get_current_user
 from backend.auth.models import User
+
 
 from backend import db
 
@@ -101,3 +102,16 @@ async def add_comments_to_idea(
     current_user: User = Depends(get_current_user),
 ):
     return await services.add_comments_to_idea(idea_id, request, current_user, database)
+
+
+@router.post(
+    "/{idea_id}/images", status_code=status.HTTP_201_CREATED
+)
+async def upload_idea_image(
+    idea_id: int,
+    file: UploadFile = File(...),
+    database: Session = Depends(db.get_db),
+    current_user: User = Depends(get_current_user),
+):
+    # You should implement this function in your services module
+    return await services.upload_idea_image(idea_id, file, current_user, database)

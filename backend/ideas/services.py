@@ -4,6 +4,8 @@ from . import models
 from backend.auth.models import User
 from sqlalchemy.orm import Session, joinedload
 import logging
+import os
+from uuid import uuid4
 
 logger = logging.getLogger("idea_app")
 
@@ -337,3 +339,67 @@ async def add_comments_to_idea(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while adding the comment: {str(e)}",
         )
+    
+
+async def upload_idea_image(
+    idea_id: int,
+    file,
+    current_user: User,
+    database: Session,
+):
+    try:
+        # Check if idea exists and belongs to user
+        idea = (
+            database.query(models.Idea)
+            .filter_by(id=idea_id, user_id=current_user.id)
+            .first()
+        )
+        if not idea:
+            logger.warning(
+                "Attempt to upload image to non-existent or unauthorized idea ID %s by user ID %s",
+                idea_id,
+                current_user.id,
+                extra={"object_id": idea_id},
+            )
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Idea Not Found!"
+            )
+
+        # Read file content
+        contents = await file.read()
+        if not contents:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Uploaded file is empty.",
+            )
+
+        # Save file to disk or cloud (example: local 'uploads' folder)
+
+        uploads_dir = "uploads"
+        os.makedirs(uploads_dir, exist_ok=True)
+        ext = os.path.splitext(file.filename)[1]
+        filename = f"{uuid4().hex}{ext}"
+        file_path = os.path.join(uploads_dir, filename)
+
+        with open(file_path, "wb") as f:
+            f.write(contents)
+
+        return {"filename": filename, "message": "Image uploaded successfully."}
+
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        database.rollback()
+        logger.error(
+            "Error uploading image to idea ID %s for user ID %s: %s",
+            idea_id,
+            current_user.id,
+            str(e),
+            exc_info=True,
+            extra={"object_id": idea_id},
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An error occurred while uploading the image: {str(e)}",
+        )
+
