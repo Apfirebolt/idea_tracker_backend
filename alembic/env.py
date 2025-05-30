@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 from backend.db import Base
 from backend.auth.models import User
-from backend.ideas.models import Idea, Tag, IdeaTag, IdeaComment, IdeaScript
+from backend.ideas.models import Idea, Tag, IdeaTag, IdeaComment, IdeaScript, IdeaImage
 import os
 
 
