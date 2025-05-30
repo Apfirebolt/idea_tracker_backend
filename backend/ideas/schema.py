@@ -91,7 +91,10 @@ class PaginatedIdeaList(BaseModel):
 class IdeaImageSchema(BaseModel):
     id: int
     idea_id: int
-    image_url: str
+    cloudinary_url: str = Field(..., alias="cloudinary_url") # Explicitly map if needed
+    image_name: str
+    image_type: str
+    description: Optional[str] = None
     created_at: datetime
 
     class Config:
