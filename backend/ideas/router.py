@@ -2,7 +2,6 @@ from typing import List
 from fastapi import APIRouter, Depends, status, Response, File, UploadFile
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate as sqlalchemy_paginate
-from fastapi_cache.decorator import cache
 
 from sqlalchemy.orm import Session
 from backend.auth.jwt import get_current_user
@@ -30,8 +29,7 @@ async def create_new_idea(
     return result
 
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=Page[schema.IdeaList])
-@cache(expire=60*60)  # Cache for 1 minute
+@router.get("/", status_code=status.HTTP_200_OK, response_model=Page[schema.IdeaList])# Cache for 1 minute
 async def idea_list(
     database: Session = Depends(db.get_db),
     current_user: User = Depends(get_current_user),
@@ -41,7 +39,6 @@ async def idea_list(
 
 
 @router.get("/shared", status_code=status.HTTP_200_OK, response_model=Page[schema.IdeaList])
-@cache(expire=60)  # Cache for 1 minute
 async def shared_idea_list(
     database: Session = Depends(db.get_db),
     current_user: User = Depends(get_current_user),

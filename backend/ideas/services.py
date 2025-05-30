@@ -88,7 +88,6 @@ async def create_new_idea(
 
 async def get_idea_listing(database, current_user) -> List[models.Idea]:
     try:
-        print('Env variable', os.getenv("CLOUDINARY_CLOUD_NAME"))
         query = database.query(models.Idea).filter(models.Idea.user_id == current_user)
         return query
     except Exception as e:
@@ -435,4 +434,5 @@ async def upload_idea_image(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while uploading the image: {str(e)}",
         )
+
 

@@ -17,7 +17,6 @@ from backend.ideas import router as ideas_router
 from backend.users import router as users_router
 from backend.tags import router as tags_router
 from backend.scripts import router as scripts_router
-from contextlib import asynccontextmanager
 
 # 1. Call setup_logging() once at the application's entry point
 setup_logging()
@@ -25,24 +24,8 @@ setup_logging()
 # 2. Get the *configured* logger instance by its name
 logger = logging.getLogger("idea_app")
 
-REDIS_URL = "redis://localhost:6379/0"
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    try:
-        redis_client = redis.from_url(REDIS_URL, decode_responses=False)
-        FastAPICache.init(RedisBackend(redis_client), prefix="fastapi-cache")
-        await redis_client.ping()
-        logger.info("Connected to Redis for caching successfully!")
-    except Exception as e:
-        logger.error(f"Could not connect to Redis for caching: {e}")
-        fallback_client = redis.from_url("redis://localhost:6379/0", decode_responses=True)
-        FastAPICache.init(RedisBackend(fallback_client), prefix="fastapi-cache")
-    yield
-
 app = FastAPI(title="Fast API Ticket Master App",
     description="A FastAPI application for managing ideas, users, and tags with WebSocket support.",
-    lifespan=lifespan,
     docs_url="/docs",
     version="0.0.1")
 
