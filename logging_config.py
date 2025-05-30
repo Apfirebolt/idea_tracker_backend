@@ -10,22 +10,31 @@ if not os.path.exists(log_dir):
 
 log_file = os.path.join(log_dir, "app_errors.log")
 
+
 # Configure the logger
 def setup_logging():
     logger = logging.getLogger("idea_app")
-    logger.setLevel(logging.INFO) # Only log ERROR level and above
+    logger.setLevel(logging.INFO)  # Only log ERROR level and above
 
     file_handler = RotatingFileHandler(
         log_file,
         maxBytes=1024 * 1024 * 5,  # 5 MB
         backupCount=5,  # Keep up to 5 old log files
-        encoding="utf-8"
+        encoding="utf-8",
     )
 
     # Define the log format to include object ID, error message, timestamp, level, etc.
-    # We'll use %(extra)s to inject the object_id
-    formatter = logging.Formatter(
-        "%(asctime)s - %(levelname)s - %(name)s - %(filename)s:%(lineno)d - (Object ID: %(object_id)s) - %(message)s"
+    class OptionalObjectIdFormatter(logging.Formatter):
+        def format(self, record):
+            object_id = getattr(record, "object_id", None)
+            if object_id is not None:
+                record.object_id_str = f"(Object ID: {object_id})"
+            else:
+                record.object_id_str = ""
+            return super().format(record)
+
+    formatter = OptionalObjectIdFormatter(
+        "%(asctime)s - %(levelname)s - %(name)s - %(filename)s:%(lineno)d %(object_id_str)s - %(message)s"
     )
     file_handler.setFormatter(formatter)
 
