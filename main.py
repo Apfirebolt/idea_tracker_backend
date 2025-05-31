@@ -7,7 +7,11 @@ from fastapi_cache.backends.redis import RedisBackend
 from typing import List
 import uvicorn
 from logging_config import setup_logging
+from contextlib import asynccontextmanager
 import logging
+
+# RabbitMQ imports
+from backend.core.rabbitmq import connect_rabbitmq, get_rabbitmq_channel # Import the new functions
 
 from backend.middleware import TimingMiddleware
 from fastapi_pagination import add_pagination
@@ -24,9 +28,47 @@ setup_logging()
 # 2. Get the *configured* logger instance by its name
 logger = logging.getLogger("idea_app")
 
+_rabbitmq_connection = None
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    FastAPI lifespan context manager for managing application startup and shutdown events.
+    """
+    global _rabbitmq_connection # Declare intent to modify the global variable
+
+    logger.info("Application starting up...")
+    try:
+        # Connect to RabbitMQ
+        _rabbitmq_connection = await connect_rabbitmq()
+        # print connected if successful
+        if _rabbitmq_connection and not _rabbitmq_connection.is_closed:
+            logger.info("RabbitMQ connection established successfully.")
+        else:
+            logger.warning("RabbitMQ connection is closed or not established.")
+        logger.info("RabbitMQ connection established during startup.")
+
+        yield # Yield control to the application (FastAPI will start serving requests)
+
+    except Exception as e:
+        logger.critical(f"Failed during startup events: {e}", exc_info=True)
+        raise
+
+    finally:
+        logger.info("Application shutting down...")
+        # Close RabbitMQ connection
+        if _rabbitmq_connection and not _rabbitmq_connection.is_closed:
+            await _rabbitmq_connection.close()
+            logger.info("RabbitMQ connection closed during shutdown.")
+        else:
+            logger.warning("RabbitMQ connection was not open or already closed during shutdown.")
+
+
 app = FastAPI(title="Fast API Ticket Master App",
     description="A FastAPI application for managing ideas, users, and tags with WebSocket support.",
     docs_url="/docs",
+    lifespan=lifespan,
     version="0.0.1")
 
 origins = ["http://localhost:8080", "http://localhost:3000",]
@@ -36,7 +78,6 @@ add_pagination(app)
 
 # Add the timing middleware
 app.add_middleware(TimingMiddleware)
-
 
 app.add_middleware(
     CORSMiddleware,
