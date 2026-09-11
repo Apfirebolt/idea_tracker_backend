@@ -3,16 +3,14 @@ import pika
 import time
 import json
 import sys
-import datetime # For better timestamp handling in logs
+import datetime
 
-# --- Configuration (MAKE SURE THESE MATCH YOUR RABBITMQ GUI SETUP) ---
+# --- Configuration ---
 RABBITMQ_HOST = 'localhost'
 RABBITMQ_PORT = 5672
 EXCHANGE_NAME = 'message_exchange' # Name of your exchange
 QUEUE_NAME = 'message_queue'     # Name of the queue you bound in the GUI
-# Binding key pattern: This consumer will only receive messages that match this pattern.
-# 'log.user.*' if you only want user events (signup, login, logout)
-# 'log.#' if you want all 'log.' events (user, error, warning, etc.)
+
 BINDING_KEY = 'log.user.*' # Example: Change this to 'log.#' if your queue binding is 'log.#' in GUI
 
 def connect_rabbitmq():
@@ -42,9 +40,6 @@ def setup_consumer(channel):
     channel.queue_declare(queue=QUEUE_NAME, durable=True)
     print(f"[*] Queue '{QUEUE_NAME}' declared.")
 
-    # Bind the queue to the exchange with the specified binding key
-    # This creates the rule for routing messages from the exchange to this queue.
-    # IMPORTANT: Ensure this binding key matches the one you set in the RabbitMQ GUI!
     channel.queue_bind(
         exchange=EXCHANGE_NAME,
         queue=QUEUE_NAME,
@@ -53,10 +48,7 @@ def setup_consumer(channel):
     print(f"[*] Queue '{QUEUE_NAME}' bound to exchange '{EXCHANGE_NAME}' with binding key '{BINDING_KEY}'.")
 
 def message_callback(ch, method, properties, body):
-    """
-    Callback function executed when a message is received.
-    This function processes the message and then acknowledges it.
-    """
+
     received_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     try:
         message_data = json.loads(body.decode('utf-8'))
@@ -70,8 +62,6 @@ def message_callback(ch, method, properties, body):
         print(f"[{received_time}] [x] Message processed in {processing_time}s. Acknowledging...")
 
         # --- ACKNOWLEDGE THE MESSAGE ---
-        # This tells RabbitMQ that the message has been successfully processed
-        # and can be safely removed from the queue.
         ch.basic_ack(delivery_tag=method.delivery_tag)
         print(f"[{received_time}] [x] Message with delivery_tag {method.delivery_tag} acknowledged.")
 
@@ -88,12 +78,9 @@ def message_callback(ch, method, properties, body):
 def main():
     connection, channel = connect_rabbitmq()
     setup_consumer(channel)
-    
+
     channel.basic_qos(prefetch_count=1)
 
-    # Start consuming messages
-    # `auto_ack=False` is critical here! It tells RabbitMQ NOT to automatically
-    # acknowledge messages. We will do it manually in `message_callback`.
     channel.basic_consume(
         queue=QUEUE_NAME,
         on_message_callback=message_callback,
