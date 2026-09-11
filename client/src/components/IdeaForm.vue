@@ -16,7 +16,7 @@
           required
           placeholder="Enter idea title"
         />
-        <PencilAltIcon
+        <PencilSquareIcon
           class="w-5 h-5 text-gray-400 absolute right-3 top-3 pointer-events-none"
         />
       </div>
@@ -34,7 +34,7 @@
           required
           placeholder="Describe your idea"
         ></textarea>
-        <PencilAltIcon
+        <PencilSquareIcon
           class="w-5 h-5 text-gray-400 absolute right-3 top-3 pointer-events-none"
         />
       </div>
@@ -122,7 +122,7 @@
 <script setup>
 import { reactive, onMounted, computed, ref } from "vue";
 import { toast } from "vue3-toastify";
-import { XCircleIcon, PencilAltIcon, PlusIcon } from "@heroicons/vue/solid";
+import { XCircleIcon, PencilSquareIcon, PlusIcon } from "@heroicons/vue/24/solid";
 const emit = defineEmits(["addIdea", "close", "updateIdea"]);
 
 const props = defineProps({

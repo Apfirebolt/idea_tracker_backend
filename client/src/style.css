@@ -12,13 +12,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @theme {
-  --color-primary: #5409DA;
-  --color-secondary: #B6B09F;
-  --color-tertiary: #4E71FF;
-  --color-light: #F2F2F2;
-  --color-dark: #1D1616;
-  --color-danger: #E82561;
-  --color-success: #5B913B;
-  --color-info: #BBFBFF;
-  --color-accent-dark: #F9B3D1;
+  --color-primary: #091540;
+  --color-secondary: #7692FF;
+  --color-light: #FFF4F4;
+  --color-dark: #4A4A4A;
+  --color-danger: #FF788D;
+  --color-success: #2A835F;
+  --color-info: #2BBBD7;
 }

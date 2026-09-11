@@ -16,7 +16,7 @@
           required
           placeholder="Enter Script title"
         />
-        <PencilAltIcon
+        <PencilSquareIcon
           class="w-5 h-5 text-gray-400 absolute right-3 top-3 pointer-events-none"
         />
       </div>
@@ -34,7 +34,7 @@
           required
           placeholder="Describe your Script"
         ></textarea>
-        <PencilAltIcon
+        <PencilSquareIcon
           class="w-5 h-5 text-gray-400 absolute right-3 top-3 pointer-events-none"
         />
       </div>
@@ -52,7 +52,7 @@
 
 <script setup>
 import { reactive, onMounted } from "vue";
-import { PencilAltIcon, PlusIcon } from "@heroicons/vue/solid";
+import { PencilSquareIcon, PlusIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
   script: {

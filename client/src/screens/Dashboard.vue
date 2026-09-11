@@ -166,7 +166,7 @@ import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-mod
 import { AgGridVue } from "@ag-grid-community/vue3";
 import {
   PlusIcon,
-} from "@heroicons/vue/solid";
+} from "@heroicons/vue/24/solid";
 import {
   TransitionRoot,
   TransitionChild,

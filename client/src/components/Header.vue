@@ -67,7 +67,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useAuth } from '../store/auth';
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
-import { MenuIcon, XIcon } from "@heroicons/vue/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
 
 const auth = useAuth();
 const authData = computed(() => auth.getAuthData);
